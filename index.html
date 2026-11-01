@@ -84,6 +84,12 @@
     .hero-title { position: relative; }
     .hero-h1 { margin: 0; font-size: clamp(48px, 7.4vw, 128px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
     .hero-h1 .nw { white-space: nowrap; }
+    .m-br { display: none; }
+    @media (max-width: 640px) {
+      .m-br { display: inline; }
+      .hero-sec { min-height: calc(100svh - 65px); display: flex; flex-direction: column; justify-content: center; padding-top: 40px; padding-bottom: 56px; }
+      .hero-h1 { font-size: 19vw; line-height: .98; }
+    }
     /* serif has a smaller x-height than Inter Tight, so it is set a touch larger to sit level with the sans words */
     .hero-h1 em { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.14em; line-height: 0; letter-spacing: -0.02em; padding-right: .04em; }
     .hero-h1 .glyph { display: inline-block; width: .66em; height: .66em; vertical-align: -.04em; margin: 0 .06em; fill: currentColor; }
@@ -201,7 +207,7 @@
     <!-- Hero -->
     <div class="hero-wrap">
       <div class="hero-glow" aria-hidden="true"><i class="g1"></i><i class="g2"></i><i class="g3"></i></div>
-    <section class="relative mx-auto max-w-7xl px-5 sm:px-10 lg:px-20 pt-20 sm:pt-28 pb-24 sm:pb-32">
+    <section class="hero-sec relative mx-auto max-w-7xl px-5 sm:px-10 lg:px-20 pt-20 sm:pt-28 pb-24 sm:pb-32">
       <svg width="0" height="0" class="absolute" aria-hidden="true">
         <defs>
           <symbol id="g-rays" viewBox="0 0 100 100"><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(0 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(15 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(30 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(45 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(60 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(75 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(90 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(105 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(120 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(135 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(150 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(165 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(180 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(195 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(210 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(225 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(240 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(255 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(270 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(285 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(300 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(315 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(330 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(345 50 50)"/><circle cx="50" cy="50" r="13"/></symbol>
@@ -212,8 +218,8 @@
 
       <div class="hero-title reveal">
         <h1 class="hero-h1">
-          Hi, I&rsquo;m <span class="nw"><em>Diana</em> <span class="pill pill--photo"><img src="assets/diana-pill.jpg" alt="" /></span></span><br />
-          product <span class="nw">designer <svg class="glyph spin-rev" style="color:#f4a3c4"><use href="#g-petals"/></svg></span>
+          Hi, I&rsquo;m <br class="m-br" /><span class="nw"><em>Diana</em> <span class="pill pill--photo"><img src="assets/diana-pill.jpg" alt="" /></span></span><br />
+          product <br class="m-br" /><span class="nw">designer <svg class="glyph spin-rev" style="color:#f4a3c4"><use href="#g-petals"/></svg></span>
         </h1>
       </div>
 
