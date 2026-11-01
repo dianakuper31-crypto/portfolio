@@ -163,10 +163,11 @@
     .personas figure { margin: 0; }
     .personas img, .media img { width: 100%; height: auto; }
     .narrow img { max-width: 760px; }
-    /* Same arrow as the before/after pairs on the Weizmann page, laid over the gap between palettes */
-    .swatch { position: relative; max-width: 760px; }
-    .swatch img { width: 100%; height: auto; display: block; }
-    .swatch-arrow { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: clamp(18px, 2.4vw, 24px); color: var(--muted); }
+    /* Palette: before and after in one row, as wide as the icon strip below; the dots shrink with the screen */
+    .palette { display: flex; align-items: center; justify-content: space-between; gap: 2%; }
+    .palette-set { display: flex; justify-content: space-between; flex: 1 1 0; gap: 1.6%; }
+    .palette-set i { display: block; flex: 1 1 0; aspect-ratio: 1; border-radius: 50%; }
+    .palette-arrow { flex: none; font-size: clamp(14px, 2.4vw, 24px); color: var(--muted); }
     /* Phone screens: a row on desktop, a swipe rail on phones so each stays readable */
     .phones { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(12px, 2vw, 24px); }
     .phones img { width: 100%; height: auto; }
@@ -354,13 +355,14 @@
           <li data-icon="🖼️"><b>Illustration, kept optimistic</b> A flat style with subtle depth, warm and human, never competing with the content.</li>
         </ul>
       </div>
-      <div class="wide media narrow">
-        <div class="swatch">
-          <img src="assets/bank/colors.webp" alt="Colour palette before and after: muted print greens and blues refreshed into brighter screen colours" width="1600" height="454" loading="lazy" />
-          <span class="swatch-arrow" aria-hidden="true">→</span>
+      <div class="wide media">
+        <div class="palette" role="img" aria-label="Colour palette before and after: muted print greens and blues refreshed into brighter screen colours">
+          <span class="palette-set"><i style="background:#1e5d1a"></i><i style="background:#2aa862"></i><i style="background:#7dbf44"></i><i style="background:#2e3e86"></i><i style="background:#2e73a5"></i><i style="background:#2ea7c0"></i></span>
+          <span class="palette-arrow" aria-hidden="true">→</span>
+          <span class="palette-set"><i style="background:#0e8d4b"></i><i style="background:#1dab62"></i><i style="background:#53de96"></i><i style="background:#0036ac"></i><i style="background:#1f58d2"></i><i style="background:#4f80ed"></i></span>
         </div>
       </div>
-      <div class="wide media zoom">
+      <div class="wide media">
         <img src="assets/bank/icons.webp" alt="Illustrated icons in blue and green: tree, grill, armchair, plant, tractor, house, olives and coffee pot" width="1800" height="186" loading="lazy" />
       </div>
       <div class="wide media zoom">
