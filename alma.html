@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Scan to Care</title>
+  <meta name="description" content="Shaping an open brief into a full skin-care app for Alma: scan results, treatments, booking, home care and loyalty." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
+  <style>
+    /* Case study: narrow text column (≈65ch) with full-bleed media rows. Accents come from the app itself: its indigo and its orange hands. */
+    :root {
+      --bg: #F3F0EA;
+      --ink: #151515;
+      --muted: #6B6862;
+      --line: #DAD5CC;
+      --card: #ffffff;
+      --indigo: #4a43e8;
+      --indigo-soft: #e6e5fd;
+      --orange: #e8642c;
+      --font: "Inter Tight", system-ui, sans-serif;
+      --serif: "Instrument Serif", Georgia, serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    img, video { max-width: 100%; height: auto; display: block; }
+
+    .gutter { padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+    .col { max-width: 1180px; margin: 0 auto; }
+    .col > * { max-width: 720px; }   /* text keeps a readable measure but starts on the same left edge as the media */
+    .wide { max-width: 1180px; margin: 0 auto; }
+
+    /* Hero */
+    .hero { padding-block: 48px 40px; }
+    .eyebrow { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 14px; }
+    h1 { margin: 0; font-size: clamp(44px, 8vw, 96px); line-height: .95; letter-spacing: -.045em; font-weight: 500; text-wrap: balance; }
+    .lede { margin: 22px 0 0; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.45; letter-spacing: -.01em; max-width: 34ch; }
+    .meta { margin: 36px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .meta dt { font-size: 14px; font-weight: 400; color: var(--muted); }
+    .meta dd { margin: 4px 0 0; font-size: 14px; font-weight: 400; line-height: 1.4; }
+
+    /* Cover: square artwork centred on a band painted with the artwork's own gradient, so it reads full-width on desktop */
+    .cover { background: linear-gradient(180deg, #1d1a74 0%, #0f0c53 50%, #020035 100%); border-radius: 24px; overflow: hidden; display: flex; justify-content: center; }
+    .cover img { width: min(100%, 640px); height: auto; }
+
+    /* Sections */
+    section { padding-block: 56px; }
+    h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; }
+    h2 { margin: 0 0 18px; font-size: clamp(30px, 4.4vw, 44px); line-height: 1.05; letter-spacing: -.045em; font-weight: 500; }
+    p { margin: 0 0 16px; font-size: 18px; line-height: 1.65; color: #2c2c2c; }
+    .callout { margin: 28px 0 0; padding: 22px 24px; background: var(--indigo-soft); border-radius: 18px; }
+    .callout b { font-weight: 500; display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--indigo); margin-bottom: 8px; }
+    .callout p { margin: 0; font-size: 20px; line-height: 1.5; color: var(--ink); font-weight: 400; }
+    .values { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .values span { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 400; }
+
+    /* Media: one composed image on desktop, separate pieces on phones */
+    .media { margin-top: 32px; }
+    .only-desktop { display: block; }
+    .only-mobile { display: none; }
+    .rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+    .rail img { flex: 0 0 auto; width: min(68%, 280px); min-width: 0; scroll-snap-align: center; height: auto; }
+    .rail-hint { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+    .mood-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mood-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .mood-grid .tall { grid-row: span 2; }
+    .caption { font-size: 14px; color: var(--muted); margin-top: 12px; }
+
+    /* Findings */
+    .findings { display: grid; gap: 64px; margin-top: 40px; }
+    .finding { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: center; }
+    .finding .num { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 10px; }
+    .finding h3 { margin: 0 0 14px; font-size: 24px; line-height: 1.2; letter-spacing: -.03em; font-weight: 500; }
+    .finding p { font-size: 17px; }
+    .finding .tag { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-right: 6px; }
+    .tag.keep { background: #dff1e4; color: #1f7a3f; }
+    .tag.fix { background: #fde3d6; color: #b4461a; }
+    .compare { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; }
+    .compare figure { margin: 0; }
+    .compare figcaption { margin-top: 10px; font-size: 13px; font-weight: 400; color: var(--muted); text-align: center; }
+    .compare .arrow { font-size: 24px; color: var(--muted); }
+    .slot { position: relative; aspect-ratio: 400 / 860; border-radius: 28px; background: #e4e4e4; overflow: hidden; display: grid; place-items: center; color: #999; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
+
+    /* Prototype video */
+    .video { margin-top: 32px; border-radius: 22px; overflow: hidden; background: var(--card); box-shadow: 0 1px 0 var(--line); }
+    .video video { width: 100%; height: auto; }
+
+    /* More */
+    .more { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .more a { display: block; padding: 28px 24px; background: var(--card); border-radius: 18px; text-decoration: none; }
+    .more small { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .more strong { font-weight: 500; font-size: 24px; letter-spacing: -.03em; }
+    .more a:hover strong { color: #bdb1f6; }
+    footer { padding-block: 32px 48px; font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 760px) {
+      .meta { grid-template-columns: 1fr 1fr; }
+      section { padding-block: 40px; }
+      .only-desktop { display: none; }
+      .only-mobile { display: block; }
+      .only-mobile.mood-grid { display: grid; }
+      .finding { grid-template-columns: 1fr; gap: 20px; }
+      .compare { gap: 8px; }
+      .more { grid-template-columns: 1fr; }
+    }
+    :root { --page-bg: var(--bg); }
+    /* Site nav: identical on every page */
+    .site-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+      background: color-mix(in srgb, var(--page-bg) 85%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(21, 21, 21, .08);
+      padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+    .site-nav__inner { line-height: 1.5; max-width: 1180px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-nav__logo { font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: #151515; text-decoration: none; }
+    .site-nav__links { display: flex; align-items: center; gap: clamp(20px, 3vw, 32px); font-family: "Inter Tight", system-ui, sans-serif; font-size: 14px; font-weight: 400; }
+    .site-nav__links a { color: #151515; text-decoration: none; transition: color .2s; }
+    .site-nav__links a:hover { color: #bdb1f6; }
+    .site-nav__links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+    .site-nav a:focus-visible { outline: 2px solid #151515; outline-offset: 4px; border-radius: 6px; }
+    .site-nav__cta { display: none !important; align-items: center; gap: 8px; background: #151515; color: #fff !important; border-radius: 999px; padding: 8px 16px; }
+    .site-nav__cta:hover { background: #f4a3c4; color: #151515 !important; }
+    .site-nav__cta i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+    @media (min-width: 640px) { .site-nav__cta { display: inline-flex !important; } }
+
+    /* Alma case study */
+    /* Band painted with the cover's own edge colours, and the image edges faded into it, so there is no seam */
+    .cover--alma { background: linear-gradient(180deg, #f0e8f6 0%, #ece2f7 25%, #e9dcf7 50%, #e6d5f9 75%, #e3cff8 100%); }
+    .cover--alma img { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
+    .cover--alma img { width: min(100%, 760px); }
+    .media .caption { margin-top: 10px; font-size: 14px; color: var(--muted); }
+    /* Key points: cards for unordered sets, a numbered timeline for the workshop sequence */
+    .col > .steps--cards { max-width: 100%; }
+    .steps { list-style: none; margin: 28px 0 0; padding: 0; }
+    .steps b { display: block; color: var(--ink); font-weight: 500; font-size: 18px; letter-spacing: -.01em; margin-bottom: 6px; }
+    .steps li { font-size: 16px; line-height: 1.6; color: #3a3a3a; }
+    .steps--cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+    .steps--cards li { position: relative; padding: 22px 0 22px 52px; border-top: 1px solid var(--line); }
+    .steps--num { counter-reset: pt; }
+    .steps--num li { counter-increment: pt; }
+    .steps--num li::before { content: counter(pt, decimal-leading-zero) !important; font-family: var(--serif); font-style: italic; font-size: 28px !important; color: #1f4fd6; top: 18px !important; }
+    .steps--cards li::before { content: attr(data-icon); position: absolute; left: 0; top: 20px; font-size: 26px; line-height: 1; }
+    /* Workshop: a stepper, dots joined by a line */
+    .steps--timeline { display: grid; gap: 0; }
+    .steps--timeline li { position: relative; padding: 0 0 28px 40px; }
+    .steps--timeline li::before { content: ""; position: absolute; left: 4px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid #1f4fd6; box-sizing: border-box; z-index: 1; }
+    .steps--timeline li:last-child::before { background: #1f4fd6; }
+    .steps--timeline li::after { content: ""; position: absolute; left: 9px; top: 18px; bottom: -6px; width: 2px; background: #c9d4f2; }
+    .steps--timeline li:last-child { padding-bottom: 0; }
+    .steps--timeline li:last-child::after { display: none; }
+    @media (max-width: 640px) { .steps--cards { grid-template-columns: 1fr; } .steps--timeline li { padding-left: 36px; } }
+    .sub { margin: 36px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+    .quote { margin: 36px 0 0; padding: 0; }
+    .quote p { font-family: var(--serif); font-style: italic; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.25; color: var(--ink); margin: 0; }
+    .quote cite { display: block; margin-top: 12px; font-style: normal; font-size: 14px; color: var(--muted); }
+    .personas { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 2vw, 24px); margin-top: 32px; }
+    .personas figure { margin: 0; }
+    .personas img, .media img { width: 100%; height: auto; }
+    .narrow img { max-width: 760px; }
+    /* Same arrow as the before/after pairs on the Weizmann page, laid over the gap between palettes */
+    .swatch { position: relative; max-width: 760px; }
+    .swatch img { width: 100%; height: auto; display: block; }
+    .swatch-arrow { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: clamp(18px, 2.4vw, 24px); color: var(--muted); }
+    /* Phone screens: a row on desktop, a swipe rail on phones so each stays readable */
+    .phones { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(12px, 2vw, 24px); }
+    .phones img { width: 100%; height: auto; }
+    .boards img { border-radius: 12px; aspect-ratio: 3 / 4; object-fit: cover; }
+    /* Brand: banner on top, then three pieces at one shared height; flex ratios are each image's width/height so the row matches the banner width */
+    .brand { display: grid; gap: 16px; }
+    .brand img { display: block; width: 100%; height: auto; border-radius: 12px; }
+    .brand-row { display: flex; gap: 16px; }
+    .brand-row img { min-width: 0; }
+    @media (max-width: 760px) {
+      .phones { grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+      .phones img { scroll-snap-align: center; }
+      .zoom { overflow-x: auto; }
+      .zoom img { width: 180%; max-width: none; }
+      .brand-row { overflow-x: auto; scroll-snap-type: x mandatory; }
+      .brand-row img { flex: 0 0 auto !important; width: auto; height: 300px; scroll-snap-align: center; }
+    }
+    /* Final screens: 4 per row on desktop, a swipe rail on phones */
+    .screens { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px 24px; }
+    .screens img { flex: 0 0 calc((100% - 72px) / 4); width: calc((100% - 72px) / 4); height: auto; }
+    @media (max-width: 760px) {
+      .screens { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; gap: 12px; }
+      .screens img { flex: 0 0 62%; width: 62%; scroll-snap-align: center; }
+    }
+    .rail img { width: min(62%, 260px); }
+
+
+    @media (min-width: 761px) { .screens--five img { flex-basis: calc((100% - 96px) / 5); width: calc((100% - 96px) / 5); } }
+    .result-sub { margin: 0 0 20px; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+    @media (min-width: 761px) { .screens--three { justify-content: flex-start; } .screens--three img { flex-basis: calc((100% - 72px) / 4); } }
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <nav class="site-nav__inner" aria-label="Main">
+      <a class="site-nav__logo" href="index.html" aria-label="Diana Kuperman, home">D.K.</a>
+      <div class="site-nav__links">
+        <a href="index.html#work">Work</a>
+        <a href="about.html">About</a>
+        <a href="assets/Diana-Kuperman-CV.pdf" target="_blank" rel="noopener">CV</a>
+        <a class="site-nav__cta" href="index.html#contact"><i aria-hidden="true"></i>Available for work</a>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <header class="hero gutter">
+      <div class="wide">
+        <p class="eyebrow">Alma</p>
+        <h1>Scan to <em>Care</em></h1>
+        <p class="lede">Shaping an open brief into a full product: an app that turns skin-scan results into treatments, bookings, home care and a reason to come back.</p>
+        <dl class="meta">
+          <div><dt>Industry</dt><dd>Beauty</dd></div>
+          <div><dt>Client</dt><dd>Alma</dd></div>
+          <div><dt>Year</dt><dd>2025</dd></div>
+          <div><dt>My role</dt><dd>Lead designer</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="gutter">
+      <div class="wide cover cover--alma">
+        <img src="assets/covers/alma.webp" alt="Alma app illustration: a face with scan points surrounded by result and treatment cards" width="1438" height="1080" />
+      </div>
+    </div>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>About</h2>
+        <p>Alma is a global leader in aesthetic laser and energy-based devices for skin, hair removal and pigmentation. Its flagship product, IQ, is a fast, non-invasive skin scanner that detects issues like pigmentation, wrinkles and texture. Practitioners use the results to build a personalised treatment plan.</p>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The challenge</h2>
+        <p>The brief was intentionally open. Beyond the core mechanic, the app receiving skin-scan results, matching them to treatments and booking an appointment, nothing else was defined. The only fixed anchor was the brand&rsquo;s colour palette.</p>
+        <div class="callout">
+          <b>The core challenge</b>
+          <p>Propose the direction myself: decide what belongs in the experience beyond the bare minimum, and shape it into one coherent product.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The process</h2>
+        <p>The core question was what added value the app should give, and what would bring customers back beyond booking. The physical treatment is only part of the journey; a whole process continues after it.</p>
+        <p>Part of that is matching customers with home-care products that extend the treatment&rsquo;s effect. So we built e-commerce into the app, letting customers buy recommended products from the company itself, which also fits Alma&rsquo;s partnerships with product brands.</p>
+        <ul class="steps steps--cards">
+          <li data-icon="🔬"><b>Detailed scan results</b>Elasticity, moisture, wrinkles and sensitivity, straight from the IQ scan.</li>
+          <li data-icon="🧴"><b>Post-treatment care</b>Day-by-day steps after each treatment.</li>
+          <li data-icon="📅"><b>Treatment history and what&rsquo;s next</b>Past and upcoming treatments, with suggested follow-ups.</li>
+          <li data-icon="🎁"><b>Points and rewards</b>For customers who keep coming back and buy through the app.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Inspiration</h2>
+      </div>
+      <div class="wide media">
+        <img src="assets/alma/inspo.webp" alt="Inspiration board of skin-care and health apps" width="1800" height="976" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Exploring with AI</h2>
+        <p>Early sketches were generated with ChatGPT, Figma Make and Claude to explore layouts and content quickly before committing to a direction.</p>
+      </div>
+      <div class="wide media">
+        <img src="assets/alma/sketches.webp" alt="AI-generated sketches of treatment history, scan results, booking, shop and home screens" width="1800" height="1557" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The booking flow</h2>
+        <p>The flow puts the practitioner before the date. First the user picks the treatment type, then the practitioner, and only then an available date and time. There&rsquo;s real value in continuity with the same practitioner, who can track the customer&rsquo;s progress across treatments.</p>
+      </div>
+      <div class="wide media">
+        <div class="screens screens--five">
+          <img src="assets/alma/book-01.webp" alt="Book appointment: choose a category" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-02.webp" alt="Category chosen" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-03.webp" alt="Select treatment sheet" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-04.webp" alt="Treatment picked in the sheet" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-05.webp" alt="Treatment selected" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-06.webp" alt="Choose a practitioner" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-07.webp" alt="Practitioner selected" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-08.webp" alt="Choose a date" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-09.webp" alt="Date and time chosen, ready to confirm and pay" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/book-10.webp" alt="Date chosen, picking a time" width="423" height="860" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The result</h2>
+      </div>
+      <div class="wide media">
+        <h3 class="result-sub">Home</h3>
+        <div class="screens screens--three">
+          <img src="assets/alma/home.webp" alt="Home: points, upcoming appointments and featured offers" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/home-2.webp" alt="Home with a different featured offer" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/home-cards.webp" alt="Home with upcoming appointments expanded" width="423" height="860" loading="lazy" />
+        </div>
+      </div>
+      <div class="wide media">
+        <h3 class="result-sub">My treatments</h3>
+        <div class="screens screens--three">
+          <img src="assets/alma/treatments.webp" alt="My treatments: history and IQ scan results" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/treatments-2.webp" alt="Scan results and recommended treatments" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/treatments-3.webp" alt="Post-treatment care, day by day" width="423" height="860" loading="lazy" />
+        </div>
+      </div>
+      <div class="wide media">
+        <h3 class="result-sub">Shop</h3>
+        <div class="screens screens--three">
+          <img src="assets/alma/shop.webp" alt="Shop: loyalty points and personalised products" width="423" height="860" loading="lazy" />
+          <img src="assets/alma/shop-2.webp" alt="Shop: loyalty rewards" width="423" height="860" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="wide">
+        <h2>More to explore</h2>
+        <div class="more">
+          <a href="weizmann.html"><small>Weizmann Institute · Science · 2025</small><strong>The Bigger Log →</strong></a>
+          <a href="bank.html"><small>Veteran Israeli bank · Finance · 2025</small><strong>Old Meets New →</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="gutter">
+    <footer class="wide">
+      <span>© 2026 Diana Kuperman</span>
+      <a href="index.html">Back to all work</a>
+    </footer>
+  </div>
+  <script>
+    // Every page opens at the top unless a link points to a section on it.
+    // The viewer can restore an old scroll offset after load, so reset again shortly after, unless the visitor already scrolled.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
+    const toTop = () => { if (!location.hash && !touched) window.scrollTo(0, 0); };
+    toTop();
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', toTop);
+    [60, 250, 600].forEach((ms) => setTimeout(toTop, ms));
+  </script>
+</body>
+</html>

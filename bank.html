@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Old Meets New</title>
+  <meta name="description" content="Redesigning a veteran bank's app for a new audience without losing its loyal customers." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
+  <style>
+    /* Case study: narrow text column (≈65ch) with full-bleed media rows. Accents come from the app itself: its indigo and its orange hands. */
+    :root {
+      --bg: #F3F0EA;
+      --ink: #151515;
+      --muted: #6B6862;
+      --line: #DAD5CC;
+      --card: #ffffff;
+      --indigo: #4a43e8;
+      --indigo-soft: #e6e5fd;
+      --orange: #e8642c;
+      --font: "Inter Tight", system-ui, sans-serif;
+      --serif: "Instrument Serif", Georgia, serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    img, video { max-width: 100%; height: auto; display: block; }
+
+    .gutter { padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+    .col { max-width: 1180px; margin: 0 auto; }
+    .col > * { max-width: 720px; }   /* text keeps a readable measure but starts on the same left edge as the media */
+    .wide { max-width: 1180px; margin: 0 auto; }
+
+    /* Hero */
+    .hero { padding-block: 48px 40px; }
+    .eyebrow { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 14px; }
+    h1 { margin: 0; font-size: clamp(44px, 8vw, 96px); line-height: .95; letter-spacing: -.045em; font-weight: 500; text-wrap: balance; }
+    .lede { margin: 22px 0 0; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.45; letter-spacing: -.01em; max-width: 34ch; }
+    .meta { margin: 36px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .meta dt { font-size: 14px; font-weight: 400; color: var(--muted); }
+    .meta dd { margin: 4px 0 0; font-size: 14px; font-weight: 400; line-height: 1.4; }
+
+    /* Cover: square artwork centred on a band painted with the artwork's own gradient, so it reads full-width on desktop */
+    .cover { background: linear-gradient(180deg, #1d1a74 0%, #0f0c53 50%, #020035 100%); border-radius: 24px; overflow: hidden; display: flex; justify-content: center; }
+    .cover img { width: min(100%, 640px); height: auto; }
+
+    /* Sections */
+    section { padding-block: 56px; }
+    h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; }
+    h2 { margin: 0 0 18px; font-size: clamp(30px, 4.4vw, 44px); line-height: 1.05; letter-spacing: -.045em; font-weight: 500; }
+    p { margin: 0 0 16px; font-size: 18px; line-height: 1.65; color: #2c2c2c; }
+    .callout { margin: 28px 0 0; padding: 22px 24px; background: var(--indigo-soft); border-radius: 18px; }
+    .callout b { font-weight: 500; display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--indigo); margin-bottom: 8px; }
+    .callout p { margin: 0; font-size: 20px; line-height: 1.5; color: var(--ink); font-weight: 400; }
+    .values { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .values span { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 400; }
+
+    /* Media: one composed image on desktop, separate pieces on phones */
+    .media { margin-top: 32px; }
+    .only-desktop { display: block; }
+    .only-mobile { display: none; }
+    .rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+    .rail img { flex: 0 0 auto; width: min(68%, 280px); min-width: 0; scroll-snap-align: center; height: auto; }
+    .rail-hint { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+    .mood-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mood-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .mood-grid .tall { grid-row: span 2; }
+    .caption { font-size: 14px; color: var(--muted); margin-top: 12px; }
+
+    /* Findings */
+    .findings { display: grid; gap: 64px; margin-top: 40px; }
+    .finding { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: center; }
+    .finding .num { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 10px; }
+    .finding h3 { margin: 0 0 14px; font-size: 24px; line-height: 1.2; letter-spacing: -.03em; font-weight: 500; }
+    .finding p { font-size: 17px; }
+    .finding .tag { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-right: 6px; }
+    .tag.keep { background: #dff1e4; color: #1f7a3f; }
+    .tag.fix { background: #fde3d6; color: #b4461a; }
+    .compare { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; }
+    .compare figure { margin: 0; }
+    .compare figcaption { margin-top: 10px; font-size: 13px; font-weight: 400; color: var(--muted); text-align: center; }
+    .compare .arrow { font-size: 24px; color: var(--muted); }
+    .slot { position: relative; aspect-ratio: 400 / 860; border-radius: 28px; background: #e4e4e4; overflow: hidden; display: grid; place-items: center; color: #999; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
+
+    /* Prototype video */
+    .video { margin-top: 32px; border-radius: 22px; overflow: hidden; background: var(--card); box-shadow: 0 1px 0 var(--line); }
+    .video video { width: 100%; height: auto; }
+
+    /* More */
+    .more { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .more a { display: block; padding: 28px 24px; background: var(--card); border-radius: 18px; text-decoration: none; }
+    .more small { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .more strong { font-weight: 500; font-size: 24px; letter-spacing: -.03em; }
+    .more a:hover strong { color: #bdb1f6; }
+    footer { padding-block: 32px 48px; font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 760px) {
+      .meta { grid-template-columns: 1fr 1fr; }
+      section { padding-block: 40px; }
+      .only-desktop { display: none; }
+      .only-mobile { display: block; }
+      .only-mobile.mood-grid { display: grid; }
+      .finding { grid-template-columns: 1fr; gap: 20px; }
+      .compare { gap: 8px; }
+      .more { grid-template-columns: 1fr; }
+    }
+    :root { --page-bg: var(--bg); }
+    /* Site nav: identical on every page */
+    .site-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+      background: color-mix(in srgb, var(--page-bg) 85%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(21, 21, 21, .08);
+      padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+    .site-nav__inner { line-height: 1.5; max-width: 1180px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-nav__logo { font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: #151515; text-decoration: none; }
+    .site-nav__links { display: flex; align-items: center; gap: clamp(20px, 3vw, 32px); font-family: "Inter Tight", system-ui, sans-serif; font-size: 14px; font-weight: 400; }
+    .site-nav__links a { color: #151515; text-decoration: none; transition: color .2s; }
+    .site-nav__links a:hover { color: #bdb1f6; }
+    .site-nav__links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+    .site-nav a:focus-visible { outline: 2px solid #151515; outline-offset: 4px; border-radius: 6px; }
+    .site-nav__cta { display: none !important; align-items: center; gap: 8px; background: #151515; color: #fff !important; border-radius: 999px; padding: 8px 16px; }
+    .site-nav__cta:hover { background: #f4a3c4; color: #151515 !important; }
+    .site-nav__cta i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+    @media (min-width: 640px) { .site-nav__cta { display: inline-flex !important; } }
+
+    /* Bank case study */
+    /* Band painted with the cover's own edge colours, and the image edges faded into it, so there is no seam */
+    .cover--bank { background: linear-gradient(180deg, #f2fafe 0%, #edf7ff 25%, #e6f4fd 50%, #e2f2ff 75%, #dbf0fd 100%); }
+    .cover--bank img { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
+    .cover--bank img { width: min(100%, 760px); }
+    .media .caption { margin-top: 10px; font-size: 14px; color: var(--muted); }
+    /* Key points: cards for unordered sets, a numbered timeline for the workshop sequence */
+    .col > .steps--cards { max-width: 100%; }
+    .steps { list-style: none; margin: 28px 0 0; padding: 0; }
+    .steps b { display: block; color: var(--ink); font-weight: 500; font-size: 18px; letter-spacing: -.01em; margin-bottom: 6px; }
+    .steps li { font-size: 16px; line-height: 1.6; color: #3a3a3a; }
+    .steps--cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+    .steps--cards li { position: relative; padding: 22px 0 22px 52px; border-top: 1px solid var(--line); }
+    .steps--num { counter-reset: pt; }
+    .steps--num li { counter-increment: pt; }
+    .steps--num li::before { content: counter(pt, decimal-leading-zero) !important; font-family: var(--serif); font-style: italic; font-size: 28px !important; color: #1f4fd6; top: 18px !important; }
+    .steps--cards li::before { content: attr(data-icon); position: absolute; left: 0; top: 20px; font-size: 26px; line-height: 1; }
+    /* Workshop: a stepper, dots joined by a line */
+    .steps--timeline { display: grid; gap: 0; }
+    .steps--timeline li { position: relative; padding: 0 0 28px 40px; }
+    .steps--timeline li::before { content: ""; position: absolute; left: 4px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid #1f4fd6; box-sizing: border-box; z-index: 1; }
+    .steps--timeline li:last-child::before { background: #1f4fd6; }
+    .steps--timeline li::after { content: ""; position: absolute; left: 9px; top: 18px; bottom: -6px; width: 2px; background: #c9d4f2; }
+    .steps--timeline li:last-child { padding-bottom: 0; }
+    .steps--timeline li:last-child::after { display: none; }
+    @media (max-width: 640px) { .steps--cards { grid-template-columns: 1fr; } .steps--timeline li { padding-left: 36px; } }
+    .sub { margin: 36px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+    .quote { margin: 36px 0 0; padding: 0; }
+    .quote p { font-family: var(--serif); font-style: italic; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.25; color: var(--ink); margin: 0; }
+    .quote cite { display: block; margin-top: 12px; font-style: normal; font-size: 14px; color: var(--muted); }
+    .personas { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 2vw, 24px); margin-top: 32px; }
+    .personas figure { margin: 0; }
+    .personas img, .media img { width: 100%; height: auto; }
+    .narrow img { max-width: 760px; }
+    /* Same arrow as the before/after pairs on the Weizmann page, laid over the gap between palettes */
+    .swatch { position: relative; max-width: 760px; }
+    .swatch img { width: 100%; height: auto; display: block; }
+    .swatch-arrow { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: clamp(18px, 2.4vw, 24px); color: var(--muted); }
+    /* Phone screens: a row on desktop, a swipe rail on phones so each stays readable */
+    .phones { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(12px, 2vw, 24px); }
+    .phones img { width: 100%; height: auto; }
+    .boards img { border-radius: 12px; aspect-ratio: 3 / 4; object-fit: cover; }
+    /* Brand: banner on top, then three pieces at one shared height; flex ratios are each image's width/height so the row matches the banner width */
+    .brand { display: grid; gap: 16px; }
+    .brand img { display: block; width: 100%; height: auto; border-radius: 12px; }
+    .brand-row { display: flex; gap: 16px; }
+    .brand-row img { min-width: 0; }
+    @media (max-width: 760px) {
+      .phones { grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+      .phones img { scroll-snap-align: center; }
+      .zoom { overflow-x: auto; }
+      .zoom img { width: 180%; max-width: none; }
+      .brand-row { overflow-x: auto; scroll-snap-type: x mandatory; }
+      .brand-row img { flex: 0 0 auto !important; width: auto; height: 300px; scroll-snap-align: center; }
+    }
+    /* Final screens: 4 per row on desktop, a swipe rail on phones */
+    .screens { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px 24px; }
+    .screens img { flex: 0 0 calc((100% - 72px) / 4); width: calc((100% - 72px) / 4); height: auto; }
+    @media (max-width: 760px) {
+      .screens { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; gap: 12px; }
+      .screens img { flex: 0 0 62%; width: 62%; scroll-snap-align: center; }
+    }
+    .rail img { width: min(62%, 260px); }
+
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <nav class="site-nav__inner" aria-label="Main">
+      <a class="site-nav__logo" href="index.html" aria-label="Diana Kuperman, home">D.K.</a>
+      <div class="site-nav__links">
+        <a href="index.html#work">Work</a>
+        <a href="about.html">About</a>
+        <a href="assets/Diana-Kuperman-CV.pdf" target="_blank" rel="noopener">CV</a>
+        <a class="site-nav__cta" href="index.html#contact"><i aria-hidden="true"></i>Available for work</a>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <header class="hero gutter">
+      <div class="wide">
+        <p class="eyebrow">Veteran Israeli bank</p>
+        <h1>Old Meets <em>New</em></h1>
+        <p class="lede">Modernising a veteran bank&rsquo;s app for a new audience, without losing the loyal customers who built it.</p>
+        <dl class="meta">
+          <div><dt>Industry</dt><dd>Finance</dd></div>
+          <div><dt>Client</dt><dd>Bank</dd></div>
+          <div><dt>Year</dt><dd>2025</dd></div>
+          <div><dt>My role</dt><dd>Lead designer &amp; research</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="gutter">
+      <div class="wide cover cover--bank">
+        <img src="assets/bank/cover.webp" alt="Banking app illustration: a blue sofa with a sleeping dog next to a plant" width="1600" height="1201" />
+      </div>
+    </div>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>About</h2>
+        <p>A veteran banking institution asked us to redesign its app, which felt outdated next to current market standards. Two goals drove the project: bring the app up to modern standards and attract a new audience, while keeping the existing customer base.</p>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The challenge</h2>
+        <p>The app had to serve two parallel, somewhat conflicting needs: long-standing customers who wanted stability, personal service and simplicity, and a younger audience expecting an advanced, proactive and efficient digital experience.</p>
+        <div class="callout">
+          <b>The core challenge</b>
+          <p>Build one app that serves two different worldviews without losing either, while meeting the bank&rsquo;s business goals: a shift in brand perception, customer satisfaction, more sales and operational agility.</p>
+        </div>
+      </div>
+      <div class="wide media">
+        <div class="phones">
+          <img src="assets/bank/old-1.webp" alt="Old app: account summary" loading="lazy" />
+          <img src="assets/bank/old-2.webp" alt="Old app: action tiles" loading="lazy" />
+          <img src="assets/bank/old-3.webp" alt="Old app: transactions" loading="lazy" />
+          <img src="assets/bank/old-4.webp" alt="Old app: foreign currency form" loading="lazy" />
+        </div>
+        <p class="caption">The old app</p>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Discovery <span>workshop</span></h2>
+        <p>Rather than jumping to solutions, we brought together 6 managers who work directly on the customer-facing app for a 4-hour design-thinking workshop.</p>
+        <ol class="steps steps--timeline">
+          <li><b>Mapping the current state</b> Strategic goals and inspiration from leading financial products in Israel and abroad.</li>
+          <li><b>Refining business goals</b> Participants ranked every possible goal. The bank wanted innovation, but ranked brand perception and customer satisfaction well above it.</li>
+          <li><b>Building personas</b> With empathy maps we built two: Reuven, 50, an existing customer looking for warmth and stability, and Yaron, 35, the new audience looking for efficiency and minimal friction. We defined Yaron as a &ldquo;soft techie&rdquo;, not a stereotype.</li>
+          <li><b>Mapping the customer journey</b> A full month for both personas, then a vote on the shared key moments: checking the balance, taking loans, cash-flow worries, opening deposits, managing several accounts and handling irregular expenses.</li>
+          <li><b>Turning it into direction</b> A simple, personal interface for the existing audience alongside proactive tools for the new one, not as two apps but as layers in the same system.</li>
+        </ol>
+      </div>
+      <div class="wide media">
+        <img src="assets/bank/workshop.webp" alt="The workshop: managers around a table, and Diana drawing an empathy map on the wall" width="1600" height="684" loading="lazy" />
+      </div>
+      <div class="wide media">
+        <div class="phones boards">
+          <img src="assets/bank/ws-2.webp" alt="Business goals clustered on a whiteboard with sticky notes" loading="lazy" />
+          <img src="assets/bank/ws-3.webp" alt="Empathy map for Reuven" loading="lazy" />
+          <img src="assets/bank/ws-4.webp" alt="Empathy map for Yaron" loading="lazy" />
+          <img src="assets/bank/ws-1.webp" alt="Customer journey board with sticky notes and dot votes" loading="lazy" />
+        </div>
+      </div>
+      <div class="wide personas">
+        <figure><img src="assets/bank/persona-reuven.webp" alt="Reuven, existing customer" width="1600" height="1880" loading="lazy" /></figure>
+        <figure><img src="assets/bank/persona-yaron.webp" alt="Yaron, potential customer" width="1600" height="1882" loading="lazy" /></figure>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>User <span>interviews</span></h2>
+        <p>Before designing a single screen, we ran 10 in-depth interviews of up to 60 minutes each, 5 with existing customers and 5 with competitors&rsquo; customers, to test the workshop&rsquo;s assumptions against real users.</p>
+        <div class="callout">
+          <b>Key insight</b>
+          <p>The gap between the personas was much smaller than the workshop assumed. Both wanted an end-to-end solution in the app. The real difference was how fast and how independently they wanted to get there.</p>
+        </div>
+        <h3 class="sub">Four pain points</h3>
+        <ul class="steps steps--cards steps--num">
+          <li><b>Fragmented information</b> Users wanted checking and credit cards in one view; card data was missing from the app.</li>
+          <li><b>No proactivity</b> Users expected the bank to flag a problem before it happened, not report it afterwards.</li>
+          <li><b>Confusing savings products</b> Technical terms pushed most interviewees to call a banker instead of using the app.</li>
+          <li><b>&ldquo;Simple&rdquo; actions needing a branch</b> Raising a credit limit, international transfers, resetting a password.</li>
+        </ul>
+        <blockquote class="quote">
+          <p>&ldquo;A digital bank needs to be accessible. Today, I need to get to my bank just to take care of the basics.&rdquo;</p>
+          <cite>Assaf S., interviewee</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>UX concept: <span>the financial feed</span></h2>
+        <p>Opening the app feels like scrolling a news feed, but bounded, not infinite. Account status at the top, insights and offers in the middle, banking products at the bottom. A structure, not a scroll.</p>
+        <ul class="steps steps--cards">
+          <li data-icon="📊"><b>A feed, not a maze</b> Status, insights and products in one structure instead of scattered screens.</li>
+          <li data-icon="✨"><b>Proactive by default</b> Insights and warnings appear before a problem happens.</li>
+          <li data-icon="💬"><b>A banker, one tap away</b> Chat sits in the standard top-bar spot.</li>
+          <li data-icon="💳"><b>Built for how people manage money</b> Credit cards now live in the app, and the checking account exports straight to Excel.</li>
+        </ul>
+      </div>
+      <div class="wide media">
+        <div class="phones">
+          <img src="assets/bank/wf-1.webp" alt="Wireframe: home" loading="lazy" />
+          <img src="assets/bank/wf-2.webp" alt="Wireframe: all actions" loading="lazy" />
+          <img src="assets/bank/wf-3.webp" alt="Wireframe: checking account" loading="lazy" />
+          <img src="assets/bank/wf-4.webp" alt="Wireframe: export settings" loading="lazy" />
+          <img src="assets/bank/wf-5.webp" alt="Wireframe: financial overview" loading="lazy" />
+        </div>
+        <p class="caption">Wireframes</p>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Creative concept: <span>familiar, refreshed</span></h2>
+        <p>User reviews kept repeating the same complaint: outdated, cluttered, not user-friendly, especially next to competitors. The brief was to modernise the feel without losing what existing customers already trust.</p>
+      </div>
+      <div class="wide media">
+        <div class="brand">
+          <img class="brand-wide" src="assets/bank/brand-web.webp" alt="The bank's website banner" loading="lazy" />
+          <div class="brand-row">
+            <img style="flex:1.0017" src="assets/bank/brand-students.webp" alt="Student campaign post" loading="lazy" />
+            <img style="flex:1" src="assets/bank/brand-branches.webp" alt="Branches post" loading="lazy" />
+            <img style="flex:0.694" src="assets/bank/brand-poster.webp" alt="Account campaign poster" loading="lazy" />
+          </div>
+        </div>
+        <p class="caption">The existing brand language</p>
+      </div>
+      <div class="col" style="margin-top:32px">
+        <ul class="steps steps--cards">
+          <li data-icon="🎨"><b>Colour, dialled in</b> The same blues and greens, refined from print-era values into a system built for screens, with clearer rules, more white space and more minimalism.</li>
+          <li data-icon="🔤"><b>Typography, kept familiar</b> Almoni stays: neutral, legible, accessible and already recognised by users.</li>
+          <li data-icon="🫧"><b>Shape, kept soft</b> Rounded corners throughout, signalling warmth and trust instead of sharp corporate edges.</li>
+          <li data-icon="🖼️"><b>Illustration, kept optimistic</b> A flat style with subtle depth, warm and human, never competing with the content.</li>
+        </ul>
+      </div>
+      <div class="wide media narrow">
+        <div class="swatch">
+          <img src="assets/bank/colors.webp" alt="Colour palette before and after: muted print greens and blues refreshed into brighter screen colours" width="1600" height="454" loading="lazy" />
+          <span class="swatch-arrow" aria-hidden="true">→</span>
+        </div>
+      </div>
+      <div class="wide media zoom">
+        <img src="assets/bank/icons.webp" alt="Illustrated icons in blue and green: tree, grill, armchair, plant, tractor, house, olives and coffee pot" width="1800" height="186" loading="lazy" />
+      </div>
+      <div class="wide media zoom">
+        <img src="assets/bank/components.webp" alt="UI components: transfer button, checks card, credit card, credit limit bar, alert, add action and loan offer" width="1600" height="787" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The result</h2>
+        <p>One app with layers for both worlds: a calm, personal feed for long-standing customers, and proactive tools for those who want to move fast.</p>
+      </div>
+      <div class="wide media">
+        <div class="screens">
+          <img src="assets/bank/screen-login.webp" alt="Log in with a personal greeting and an illustrated living room" width="839" height="1600" loading="lazy" />
+          <img src="assets/bank/screen-home.webp" alt="Home: balance, recent transactions and quick actions" width="839" height="1600" loading="lazy" />
+          <img src="assets/bank/screen-home-2.webp" alt="Home, further down: an alert, credit cards, deposits and checks" width="839" height="1600" loading="lazy" />
+          <img src="assets/bank/screen-account.webp" alt="Checking account with credit limit and transactions" width="839" height="1600" loading="lazy" />
+          <img src="assets/bank/screen-overview.webp" alt="Financial overview across banks and cards" width="839" height="1600" loading="lazy" />
+          <img src="assets/bank/screen-actions.webp" alt="All actions, searchable and grouped" width="839" height="1600" loading="lazy" />
+          <img src="assets/bank/screen-loan.webp" alt="Loan request with amount and payment sliders" width="839" height="1600" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="wide">
+        <h2>More to explore</h2>
+        <div class="more">
+          <a href="weizmann.html"><small>Weizmann Institute · Science · 2025</small><strong>The Bigger Log →</strong></a>
+          <a href="lattica.html"><small>Lattica · Data security · 2024</small><strong>Zero to One →</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="gutter">
+    <footer class="wide">
+      <span>© 2026 Diana Kuperman</span>
+      <a href="index.html">Back to all work</a>
+    </footer>
+  </div>
+  <script>
+    // Every page opens at the top unless a link points to a section on it.
+    // The viewer can restore an old scroll offset after load, so reset again shortly after, unless the visitor already scrolled.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
+    const toTop = () => { if (!location.hash && !touched) window.scrollTo(0, 0); };
+    toTop();
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', toTop);
+    [60, 250, 600].forEach((ms) => setTimeout(toTop, ms));
+  </script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Zero to One</title>
+  <meta name="description" content="Designing Lattica's client dashboard and live encrypted-AI demo from scratch." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
+  <style>
+    /* Case study: narrow text column (≈65ch) with full-bleed media rows. Accents come from the app itself: its indigo and its orange hands. */
+    :root {
+      --bg: #F3F0EA;
+      --ink: #151515;
+      --muted: #6B6862;
+      --line: #DAD5CC;
+      --card: #ffffff;
+      --indigo: #4a43e8;
+      --indigo-soft: #e6e5fd;
+      --orange: #e8642c;
+      --font: "Inter Tight", system-ui, sans-serif;
+      --serif: "Instrument Serif", Georgia, serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    img, video { max-width: 100%; height: auto; display: block; }
+
+    .gutter { padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+    .col { max-width: 1180px; margin: 0 auto; }
+    .col > * { max-width: 720px; }   /* text keeps a readable measure but starts on the same left edge as the media */
+    .wide { max-width: 1180px; margin: 0 auto; }
+
+    /* Hero */
+    .hero { padding-block: 48px 40px; }
+    .eyebrow { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 14px; }
+    h1 { margin: 0; font-size: clamp(44px, 8vw, 96px); line-height: .95; letter-spacing: -.045em; font-weight: 500; text-wrap: balance; }
+    .lede { margin: 22px 0 0; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.45; letter-spacing: -.01em; max-width: 34ch; }
+    .meta { margin: 36px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .meta dt { font-size: 14px; font-weight: 400; color: var(--muted); }
+    .meta dd { margin: 4px 0 0; font-size: 14px; font-weight: 400; line-height: 1.4; }
+
+    /* Cover: square artwork centred on a band painted with the artwork's own gradient, so it reads full-width on desktop */
+    .cover { background: linear-gradient(180deg, #1d1a74 0%, #0f0c53 50%, #020035 100%); border-radius: 24px; overflow: hidden; display: flex; justify-content: center; }
+    .cover img { width: min(100%, 640px); height: auto; }
+
+    /* Sections */
+    section { padding-block: 56px; }
+    h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; }
+    h2 { margin: 0 0 18px; font-size: clamp(30px, 4.4vw, 44px); line-height: 1.05; letter-spacing: -.045em; font-weight: 500; }
+    p { margin: 0 0 16px; font-size: 18px; line-height: 1.65; color: #2c2c2c; }
+    .callout { margin: 28px 0 0; padding: 22px 24px; background: var(--indigo-soft); border-radius: 18px; }
+    .callout b { font-weight: 500; display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--indigo); margin-bottom: 8px; }
+    .callout p { margin: 0; font-size: 20px; line-height: 1.5; color: var(--ink); font-weight: 400; }
+    .values { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .values span { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 400; }
+
+    /* Media: one composed image on desktop, separate pieces on phones */
+    .media { margin-top: 32px; }
+    .only-desktop { display: block; }
+    .only-mobile { display: none; }
+    .rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+    .rail img { flex: 0 0 auto; width: min(68%, 280px); min-width: 0; scroll-snap-align: center; height: auto; }
+    .rail-hint { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+    .mood-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mood-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .mood-grid .tall { grid-row: span 2; }
+    .caption { font-size: 14px; color: var(--muted); margin-top: 12px; }
+
+    /* Findings */
+    .findings { display: grid; gap: 64px; margin-top: 40px; }
+    .finding { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: center; }
+    .finding .num { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 10px; }
+    .finding h3 { margin: 0 0 14px; font-size: 24px; line-height: 1.2; letter-spacing: -.03em; font-weight: 500; }
+    .finding p { font-size: 17px; }
+    .finding .tag { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-right: 6px; }
+    .tag.keep { background: #dff1e4; color: #1f7a3f; }
+    .tag.fix { background: #fde3d6; color: #b4461a; }
+    .compare { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; }
+    .compare figure { margin: 0; }
+    .compare figcaption { margin-top: 10px; font-size: 13px; font-weight: 400; color: var(--muted); text-align: center; }
+    .compare .arrow { font-size: 24px; color: var(--muted); }
+    .slot { position: relative; aspect-ratio: 400 / 860; border-radius: 28px; background: #e4e4e4; overflow: hidden; display: grid; place-items: center; color: #999; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
+
+    /* Prototype video */
+    .video { margin-top: 32px; border-radius: 22px; overflow: hidden; background: var(--card); box-shadow: 0 1px 0 var(--line); }
+    .video video { width: 100%; height: auto; }
+
+    /* More */
+    .more { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .more a { display: block; padding: 28px 24px; background: var(--card); border-radius: 18px; text-decoration: none; }
+    .more small { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .more strong { font-weight: 500; font-size: 24px; letter-spacing: -.03em; }
+    .more a:hover strong { color: #bdb1f6; }
+    footer { padding-block: 32px 48px; font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 760px) {
+      .meta { grid-template-columns: 1fr 1fr; }
+      section { padding-block: 40px; }
+      .only-desktop { display: none; }
+      .only-mobile { display: block; }
+      .only-mobile.mood-grid { display: grid; }
+      .finding { grid-template-columns: 1fr; gap: 20px; }
+      .compare { gap: 8px; }
+      .more { grid-template-columns: 1fr; }
+    }
+    :root { --page-bg: var(--bg); }
+    /* Site nav: identical on every page */
+    .site-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+      background: color-mix(in srgb, var(--page-bg) 85%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(21, 21, 21, .08);
+      padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+    .site-nav__inner { line-height: 1.5; max-width: 1180px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-nav__logo { font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: #151515; text-decoration: none; }
+    .site-nav__links { display: flex; align-items: center; gap: clamp(20px, 3vw, 32px); font-family: "Inter Tight", system-ui, sans-serif; font-size: 14px; font-weight: 400; }
+    .site-nav__links a { color: #151515; text-decoration: none; transition: color .2s; }
+    .site-nav__links a:hover { color: #bdb1f6; }
+    .site-nav__links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+    .site-nav a:focus-visible { outline: 2px solid #151515; outline-offset: 4px; border-radius: 6px; }
+    .site-nav__cta { display: none !important; align-items: center; gap: 8px; background: #151515; color: #fff !important; border-radius: 999px; padding: 8px 16px; }
+    .site-nav__cta:hover { background: #f4a3c4; color: #151515 !important; }
+    .site-nav__cta i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+    @media (min-width: 640px) { .site-nav__cta { display: inline-flex !important; } }
+
+    /* Lattica: desktop screenshots stack, each with a small caption */
+    /* Band painted with the cover's own edge colours, and the image edges faded into it, so there is no seam */
+    .cover--lattica { background: linear-gradient(180deg, #c3e4fe 0%, #b1defe 25%, #9ed5ff 50%, #8cccff 75%, #79c4ff 100%); }
+    .cover--lattica img { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); }
+    .cover--lattica img { width: min(100%, 760px); }
+    .shots { display: grid; gap: clamp(28px, 4vw, 48px); margin-top: 32px; }
+    .shots figure { margin: 0; }
+    .shots img { width: 100%; height: auto; display: block; }
+    .shots figcaption { margin-top: 8px; font-size: 14px; color: var(--muted); }
+    .directions { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 40px); margin-top: 32px; }
+    .directions figure { margin: 0; display: grid; gap: 12px; align-content: start; }
+    .directions img { width: 100%; height: auto; display: block; }
+    .directions figcaption { font-size: 14px; color: var(--muted); }
+    @media (max-width: 760px) { .directions { grid-template-columns: 1fr; gap: 36px; } }
+    .decisions { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 14px; }
+    .decisions li { font-size: 17px; line-height: 1.6; color: #2c2c2c; padding-left: 18px; border-left: 2px solid var(--line); }
+    .decisions b { color: var(--ink); font-weight: 500; }
+    .list { margin: 0 0 16px; padding-left: 20px; display: grid; gap: 8px; font-size: 18px; line-height: 1.6; color: #2c2c2c; }
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <nav class="site-nav__inner" aria-label="Main">
+      <a class="site-nav__logo" href="index.html" aria-label="Diana Kuperman, home">D.K.</a>
+      <div class="site-nav__links">
+        <a href="index.html#work">Work</a>
+        <a href="about.html">About</a>
+        <a href="assets/Diana-Kuperman-CV.pdf" target="_blank" rel="noopener">CV</a>
+        <a class="site-nav__cta" href="index.html#contact"><i aria-hidden="true"></i>Available for work</a>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <header class="hero gutter">
+      <div class="wide">
+        <p class="eyebrow">Lattica</p>
+        <h1>Zero to <em>One</em></h1>
+        <p class="lede">Two products built from scratch for a startup running AI on fully encrypted data: a dashboard for clients, and a live demo that makes invisible technology tangible.</p>
+        <dl class="meta">
+          <div><dt>Industry</dt><dd>Data security</dd></div>
+          <div><dt>Client</dt><dd>Lattica, Tel Aviv</dd></div>
+          <div><dt>Year</dt><dd>2024</dd></div>
+          <div><dt>Timeline</dt><dd>4 weeks</dd></div>
+          <div><dt>My role</dt><dd>Lead designer</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="gutter">
+      <div class="wide cover cover--lattica">
+        <img src="assets/covers/lattica.webp" alt="Lattica dashboard card showing workers volume per model, with Add Credit, Client Side and Active labels" width="1438" height="1080" />
+      </div>
+    </div>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>About</h2>
+        <p>Lattica builds AI infrastructure using Fully Homomorphic Encryption: data stays encrypted even while AI models process it, so companies in healthcare, finance and other sensitive fields can use AI without exposing their data.</p>
+        <p>We built two products for them:</p>
+        <ul class="list">
+          <li><b>Dashboard</b> for clients ("workload providers") who deploy and manage their AI models on the platform.</li>
+          <li><b>Demo</b> for website visitors, letting anyone try encrypted AI live, such as digit recognition or sentiment analysis, before committing.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The challenge</h2>
+        <p>We built both products from scratch, with no guidelines from the client, no prior familiarity with the domain, and only one competitor to refer to. Based only on what the client told us, we had to understand what the product actually was and how to build it so it would serve its users best.</p>
+        <div class="callout">
+          <b>The core challenge</b>
+          <p>Convey, as realistically as possible, how the technology actually works, inside the demo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Early <span>directions</span></h2>
+        <p>Two directions went to the client: a light one with deep indigo and saturated accents, and a dark one with pastel accents. They asked for a mix of the two, and found both palettes a little loud, so the final design softens the colours.</p>
+      </div>
+      <div class="wide directions">
+        <figure>
+          <img src="assets/lattica/early-light.webp" alt="Light direction: Models management on white with an indigo sidebar and saturated purple, blue and yellow charts" width="1600" height="1023" loading="lazy" />
+          <img src="assets/lattica/early-light-login.webp" alt="Light direction: log in screen with an isometric illustration of locks and platforms on deep indigo" width="1600" height="1026" loading="lazy" />
+          <figcaption>Direction A · Light</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/lattica/early-dark.webp" alt="Dark direction: Models management on near-black with purple buttons and pastel pink, blue, yellow and orange charts" width="1600" height="1023" loading="lazy" />
+          <img src="assets/lattica/early-dark-login.webp" alt="Dark direction: log in screen with a glowing 3D locked box on a dark background" width="1600" height="1026" loading="lazy" />
+          <figcaption>Direction B · Dark</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The <span>dashboard</span></h2>
+        <p>Clients manage everything from three areas: <b>Models</b>, where they watch each model&rsquo;s load, workers and connected tokens; <b>Finance</b>, for credits, costs and payouts; and <b>Tokens</b>, for the access keys they hand out to their own customers.</p>
+      </div>
+      <div class="wide shots">
+        <figure><img src="assets/lattica/models.webp" alt="Models Management: credits, workers volume, queries per model and the list of active models" width="1504" height="964" loading="lazy" /><figcaption>Models management</figcaption></figure>
+        <figure><img src="assets/lattica/finance.webp" alt="Finance Dashboard: credits, overall models cost by month and payout activity" width="1504" height="964" loading="lazy" /><figcaption>Finance</figcaption></figure>
+        <figure><img src="assets/lattica/tokens.webp" alt="Tokens: a table of access tokens with dates, model permission and status" width="1504" height="964" loading="lazy" /><figcaption>Tokens</figcaption></figure>
+        <figure><img src="assets/lattica/login.webp" alt="Log in screen with an isometric line illustration" width="1504" height="964" loading="lazy" /><figcaption>Log in</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The <span>demo</span></h2>
+        <p>Encryption is invisible, so the demo turns it into steps people can watch. After an evaluation key is generated, the visitor encodes an input, sends it to the server and decrypts the result, while a side panel shows the code running at each step.</p>
+        <ul class="decisions">
+          <li><b>Three steps.</b> Encoding, sending to the server and decrypting each work differently with the server, so each one gets its own step.</li>
+          <li><b>A live code panel.</b> For visitors who read code, it shows what is happening behind the scenes at every step.</li>
+          <li><b>Any image works.</b> Visitors can drag in or upload their own image, or pick a ready-made sample to start right away.</li>
+        </ul>
+      </div>
+      <div class="wide" style="margin-top:32px">
+        <div class="video">
+          <video src="assets/lattica/demo.mp4" poster="assets/lattica/demo-poster.webp" autoplay muted loop playsinline preload="metadata" aria-label="Demo walkthrough: generating an evaluation key, encoding an input, sending it to the server and decrypting the result"></video>
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="wide">
+        <h2>More to explore</h2>
+        <div class="more">
+          <a href="weizmann.html"><small>Weizmann Institute · Science · 2025</small><strong>The Bigger Log →</strong></a>
+          <a href="alma.html"><small>Alma · Beauty · 2025</small><strong>Scan to Care →</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="gutter">
+    <footer class="wide">
+      <span>© 2026 Diana Kuperman</span>
+      <a href="index.html">Back to all work</a>
+    </footer>
+  </div>
+  <script>
+    // Every page opens at the top unless a link points to a section on it.
+    // The viewer can restore an old scroll offset after load, so reset again shortly after, unless the visitor already scrolled.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
+    const toTop = () => { if (!location.hash && !touched) window.scrollTo(0, 0); };
+    toTop();
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', toTop);
+    [60, 250, 600].forEach((ms) => setTimeout(toTop, ms));
+  </script>
+</body>
+</html>

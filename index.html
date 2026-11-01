@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diana Kuperman — Product Designer</title>
+  <meta name="description" content="Diana Kuperman is a product designer who turns complex, sensitive systems into products people trust — across science, finance and AI security." />
+  <meta property="og:title" content="Diana Kuperman — Product Designer" />
+  <meta property="og:description" content="Product design for complex, sensitive systems — science, finance and AI security." />
+  <meta property="og:image" content="assets/og.png" />
+
+  <!-- Content is visible by default; animations only run once this class is set. -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#F3F0EA',
+            ink: '#151515',
+            muted: '#6B6862',
+            line: '#DAD5CC',
+            accent: '#2F3BFF',
+          },
+          fontFamily: {
+            sans: ['"Inter Tight"', 'system-ui', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+          },
+          letterSpacing: { tightest: '-0.045em' },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    ::selection { background: #2F3BFF; color: #fff; }
+
+    .js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+    .js .reveal.is-visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .js .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    .case-media img { transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
+    .case:hover .case-media img { transform: scale(1.03); }
+    .case:hover .case-arrow { transform: translate(4px, -4px); }
+    .case-arrow { transition: transform .3s ease; }
+    :root { --page-bg: #F3F0EA; }
+    /* Site nav: identical on every page */
+    .site-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+      background: color-mix(in srgb, var(--page-bg) 85%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(21, 21, 21, .08);
+      padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+    .site-nav__inner { line-height: 1.5; max-width: 1180px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-nav__logo { font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: #151515; text-decoration: none; }
+    .site-nav__links { display: flex; align-items: center; gap: clamp(20px, 3vw, 32px); font-family: "Inter Tight", system-ui, sans-serif; font-size: 14px; font-weight: 400; }
+    .site-nav__links a { color: #151515; text-decoration: none; transition: color .2s; }
+    .site-nav__links a:hover { color: #bdb1f6; }
+    .site-nav__links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+    .site-nav a:focus-visible { outline: 2px solid #151515; outline-offset: 4px; border-radius: 6px; }
+    .site-nav__cta { display: none !important; align-items: center; gap: 8px; background: #151515; color: #fff !important; border-radius: 999px; padding: 8px 16px; }
+    .site-nav__cta:hover { background: #f4a3c4; color: #151515 !important; }
+    .site-nav__cta i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+    @media (min-width: 640px) { .site-nav__cta { display: inline-flex !important; } }
+
+    /* Hero: one running line split by spinning glyphs, a photo capsule and serif touches */
+    .hero-title { position: relative; }
+    .hero-h1 { margin: 0; font-size: clamp(48px, 7.4vw, 128px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
+    .hero-h1 .nw { white-space: nowrap; }
+    /* serif has a smaller x-height than Inter Tight, so it is set a touch larger to sit level with the sans words */
+    .hero-h1 em { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.14em; line-height: 0; letter-spacing: -0.02em; padding-right: .04em; }
+    .hero-h1 .glyph { display: inline-block; width: .66em; height: .66em; vertical-align: -.04em; margin: 0 .06em; fill: currentColor; }
+    /* Photo capsule set inline with the words */
+    .pill { display: inline-block; width: 1.5em; height: .72em; border-radius: 999px; vertical-align: -.02em; overflow: hidden; }
+    .pill--photo img { width: 100%; height: 100%; object-fit: cover; object-position: 45% 45%; display: block; }
+    @media (prefers-reduced-motion: no-preference) {
+      .glyph.spin { animation: spin 18s linear infinite; }
+      .glyph.spin-rev { animation: spin 24s linear infinite reverse; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    }
+
+    /* Soft gradient glows behind the hero */
+    .hero-wrap { position: relative; overflow: hidden; }
+    .hero-glow { position: absolute; inset: 0; pointer-events: none; }
+    .hero-glow i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .7; }
+    .hero-glow .g1 { width: 46vw; height: 46vw; max-width: 640px; max-height: 640px; left: -8vw; top: -10vw; background: radial-gradient(circle, #c9bdfa 0%, rgba(201,189,250,0) 70%); }
+    .hero-glow .g2 { width: 40vw; height: 40vw; max-width: 560px; max-height: 560px; right: -6vw; top: 4vw; background: radial-gradient(circle, #f7b9d2 0%, rgba(247,185,210,0) 70%); }
+    .hero-glow .g3 { width: 36vw; height: 36vw; max-width: 500px; max-height: 500px; left: 34vw; bottom: -14vw; background: radial-gradient(circle, #d7e98f 0%, rgba(215,233,143,0) 70%); }
+    @media (max-width: 640px) { .hero-glow i { filter: blur(48px); } .hero-glow .g1 { width: 90vw; height: 90vw; } .hero-glow .g2 { width: 80vw; height: 80vw; top: 30vw; } .hero-glow .g3 { width: 80vw; height: 80vw; left: 10vw; bottom: -30vw; } }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-glow .g1 { animation: drift1 22s ease-in-out infinite alternate; }
+      .hero-glow .g2 { animation: drift2 26s ease-in-out infinite alternate; }
+      .hero-glow .g3 { animation: drift1 30s ease-in-out infinite alternate-reverse; }
+      @keyframes drift1 { to { transform: translate(6vw, 4vw) scale(1.08); } }
+      @keyframes drift2 { to { transform: translate(-5vw, 5vw) scale(.94); } }
+    }
+
+    /* Selected work: a sticky stage; vertical scroll slides the track sideways (height set in script) */
+    .hw { position: relative; }
+    .hw-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: clamp(24px, 4vh, 48px); padding-top: 64px; }
+    .hw-head { width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+    .hw-track { display: flex; gap: 4vw; padding: 0 max(20px, calc((100vw - 80rem) / 2 + 80px)); will-change: transform; }
+    .hw-panel { flex: 0 0 min(80vw, 1040px); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 3vw; align-items: center; text-decoration: none; color: inherit; }
+    .hw-panel > * { min-width: 0; }
+    .hw-pic { position: relative; aspect-ratio: 4 / 3; border-radius: 22px; overflow: hidden; transition: transform .35s cubic-bezier(.2,.8,.2,1); background: #e8e3da; }
+    .hw-pic img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+    .hw-panel:hover .hw-pic img { transform: scale(1.1); }
+    .hw-num { margin: 0; font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-size: clamp(56px, 8vw, 120px); line-height: .8; color: var(--c); }
+    .hw-client { margin: 0; font-size: 14px; color: #6B6862; }
+    .hw-panel h3 { margin: 6px 0 12px; font-size: clamp(30px, 4vw, 54px); line-height: .98; letter-spacing: -.045em; font-weight: 500; }
+    .hw-text { margin: 0; color: rgba(21,21,21,.75); font-size: 16px; line-height: 1.55; max-width: 36ch; }
+    .hw-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .hw-tags span { font-size: 12px; padding: 6px 12px; border-radius: 999px; border: 1px solid #DAD5CC; }
+    .hw-cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; font-size: 14px; font-weight: 500; transition: color .2s; }
+    .hw-panel:hover .hw-cta { color: #8f7ef0; }
+    .hw-panel:hover .hw-cta svg { transform: translate(4px, -4px); }
+    .hw-cta svg { transition: transform .3s; }
+    .hw-cta--muted { color: #6B6862; font-weight: 400; }
+    .hw-badge { position: absolute; top: 16px; left: 16px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(243,240,234,.9); font-size: 12px; font-weight: 500; }
+    .hw-badge i { width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; }
+    .hw-progress { width: 100%; }
+    .hw-progress div { height: 2px; background: #DAD5CC; }
+    .hw-progress b { display: block; height: 100%; width: 0; background: #f4a3c4; }
+    @media (max-width: 760px) {
+      .hw-panel { flex-basis: 84vw; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .hw-track { gap: 24px; }
+      .hw-num { font-size: 48px; }
+      .hw-text { font-size: 15px; }
+    }
+
+    /* Let's talk */
+    .lt { background: #151515; color: #F3F0EA; padding: 96px 0 72px; overflow: hidden; border-top: 1px solid rgba(243,240,234,.12); }
+    .lt-marquee { display: flex; white-space: nowrap; font-size: clamp(56px, 11vw, 170px); font-weight: 600; letter-spacing: -.055em; line-height: 1; }
+    .lt-marquee div { display: flex; gap: .3em; padding-right: .3em; animation: lt-run 22s linear infinite; }
+    .lt-marquee em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -.02em; }
+    .lt-marquee svg { width: .6em; height: .6em; align-self: center; fill: currentColor; animation: spin 18s linear infinite; }
+    @keyframes lt-run { to { transform: translateX(-100%); } }
+    .lt-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #F3F0EA; color: #F3F0EA; background: transparent; border-radius: 999px; padding: 12px 22px; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+    .lt-btn:hover { background: #f4a3c4; border-color: #f4a3c4; color: #151515; }
+    .lt-btn--solid { background: #F3F0EA; color: #151515; }
+    @media (prefers-reduced-motion: reduce) { .lt-marquee div, .lt-marquee svg { animation: none; } }
+
+    /* About on the homepage: photo-booth strip with floating chips beside the intro (phones: stacked) */
+    .ab { display: grid; grid-template-areas: "title" "photo" "text"; justify-items: center; gap: clamp(28px, 4vw, 44px); padding-top: clamp(80px, 10vw, 128px); padding-bottom: clamp(80px, 10vw, 128px); }
+    .ab-title { grid-area: title; margin: 0; text-align: center; font-size: clamp(52px, 9vw, 112px); line-height: .88; letter-spacing: -.05em; font-weight: 600; }
+    .ab-title em { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; font-size: .62em; letter-spacing: -.02em; }
+    .ab-booth { grid-area: photo; position: relative; container-type: inline-size; width: min(100%, 560px); padding: 0 12%; }
+    .ab-booth > .ab-chip, .ab-booth > .ab-shape { position: absolute; z-index: 2; }
+    .ab-strip { background: #151515; padding: 3.2cqw; transform: rotate(-2deg); box-shadow: 0 30px 60px rgba(21,21,21,.18); }
+    .ab-photo { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; }
+    .ab-photo img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1) brightness(1.03); transform: scale(1.15); transform-origin: 50% 38%; }
+    .ab-photo::after { content: ""; position: absolute; inset: 0; opacity: .65; mix-blend-mode: overlay; pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>"); }
+    .ab-chip { background: #fff; color: #151515; font-size: max(14px, 3.6cqw); font-weight: 500; padding: .7em 1.4em; border-radius: 999px; white-space: nowrap; box-shadow: 0 10px 24px rgba(21,21,21,.12); }
+    .ab-shape { aspect-ratio: 1; height: auto; fill: currentColor; }
+    @media (prefers-reduced-motion: no-preference) { .ab-shape { animation: spin 20s linear infinite; } }
+    .ab-text { grid-area: text; max-width: 600px; display: grid; gap: 16px; }
+    .ab-text p { margin: 0; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.625; color: rgba(21,21,21,.85); }
+    @media (min-width: 900px) {
+      .ab { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "photo title" "photo text"; align-items: center; justify-items: start; column-gap: clamp(40px, 6vw, 96px); row-gap: 28px; }
+      .ab-title { text-align: left; align-self: end; }
+      .ab-booth { width: min(44vw, 560px); }
+      .ab-text { align-self: start; }
+    }
+  </style>
+</head>
+
+<body class="bg-paper text-ink font-sans antialiased">
+
+  <header class="site-nav">
+    <nav class="site-nav__inner" aria-label="Main">
+      <a class="site-nav__logo" href="#top" aria-label="Diana Kuperman, home">D.K.</a>
+      <div class="site-nav__links">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="assets/Diana-Kuperman-CV.pdf" target="_blank" rel="noopener">CV</a>
+        <a class="site-nav__cta" href="#contact"><i aria-hidden="true"></i>Available for work</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- Hero -->
+    <div class="hero-wrap">
+      <div class="hero-glow" aria-hidden="true"><i class="g1"></i><i class="g2"></i><i class="g3"></i></div>
+    <section class="relative mx-auto max-w-7xl px-5 sm:px-10 lg:px-20 pt-20 sm:pt-28 pb-24 sm:pb-32">
+      <svg width="0" height="0" class="absolute" aria-hidden="true">
+        <defs>
+          <symbol id="g-rays" viewBox="0 0 100 100"><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(0 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(15 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(30 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(45 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(60 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(75 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(90 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(105 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(120 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(135 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(150 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(165 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(180 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(195 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(210 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(225 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(240 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(255 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(270 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(285 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(300 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(315 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(330 50 50)"/><rect x="47.5" y="1" width="5" height="49" rx="2.5" transform="rotate(345 50 50)"/><circle cx="50" cy="50" r="13"/></symbol>
+          <symbol id="g-petals" viewBox="0 0 100 100"><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(0 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(45 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(90 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(135 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(180 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(225 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(270 50 50)"/><ellipse cx="50" cy="25" rx="11" ry="24" transform="rotate(315 50 50)"/></symbol>
+          <symbol id="g-spiky" viewBox="0 0 100 100"><path d="M50.0,0.0 L55.5,22.5 L69.1,3.8 L65.6,26.7 L85.4,14.6 L73.3,34.4 L96.2,30.9 L77.5,44.5 L100.0,50.0 L77.5,55.5 L96.2,69.1 L73.3,65.6 L85.4,85.4 L65.6,73.3 L69.1,96.2 L55.5,77.5 L50.0,100.0 L44.5,77.5 L30.9,96.2 L34.4,73.3 L14.6,85.4 L26.7,65.6 L3.8,69.1 L22.5,55.5 L0.0,50.0 L22.5,44.5 L3.8,30.9 L26.7,34.4 L14.6,14.6 L34.4,26.7 L30.9,3.8 L44.5,22.5Z"/></symbol>
+        </defs>
+      </svg>
+
+      <div class="hero-title reveal">
+        <h1 class="hero-h1">
+          <span class="nw"><svg class="glyph spin" style="color:#bdb1f6"><use href="#g-rays"/></svg> Hi,</span> I&rsquo;m <span class="nw"><em>Diana</em> <span class="pill pill--photo"><img src="assets/diana-pill.jpg" alt="" /></span></span>
+          product <span class="nw">designer <svg class="glyph spin-rev" style="color:#f4a3c4"><use href="#g-petals"/></svg></span>
+          <em>curious</em> by <span class="nw">nature <svg class="glyph spin" style="color:#c3d86f"><use href="#g-spiky"/></svg></span>
+          <em>people</em> person
+        </h1>
+      </div>
+
+      <div class="reveal mt-10 sm:mt-14">
+        <div class="flex flex-wrap gap-3">
+          <a href="#work" class="inline-flex items-center gap-2 rounded-full bg-ink text-paper px-6 py-3 text-sm hover:bg-[#f4a3c4] hover:text-ink transition-colors">
+            View selected work
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </a>
+          <a href="#contact" class="inline-flex items-center rounded-full border border-ink px-6 py-3 text-sm hover:bg-ink hover:text-paper transition-colors">Get in touch</a>
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <!-- Selected work -->
+    <!-- Selected work: vertical scroll moves the projects sideways -->
+    <section id="work" class="hw border-t border-line">
+      <div class="hw-sticky">
+        <div class="hw-head mx-auto max-w-7xl px-5 sm:px-10 lg:px-20">
+          <h2 class="text-4xl sm:text-6xl tracking-tightest font-medium">Selected work</h2>
+          <span class="text-sm text-muted"><span id="hw-count">01</span> / 05</span>
+        </div>
+        <div class="hw-track" id="hw-track">
+          <a class="hw-panel" href="weizmann.html" style="--c:#bdb1f6">
+            <div class="hw-pic"><img src="assets/covers/weizmann.webp" alt="Care Lab study-logging app for the Weizmann Institute" /></div>
+            <div><p class="hw-client">Weizmann Institute of Science</p><h3>The Bigger Log</h3><p class="hw-text">Redesigning a research app participants were abandoning mid-study, so logging intimate daily data feels private, cared for, and part of real science.</p><div class="hw-tags"><span>Science</span><span>Lead Designer</span><span>2025</span></div><span class="hw-cta">Read case study <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </a>
+          <a class="hw-panel" href="bank.html" style="--c:#f4a3c4">
+            <div class="hw-pic"><img src="assets/covers/bank.webp" alt="Banking app redesign for a veteran Israeli bank" /></div>
+            <div><p class="hw-client">Veteran Israeli bank</p><h3>Old Meets New</h3><p class="hw-text">Modernising a veteran bank&rsquo;s app for a younger audience, without losing the loyal customers who built it, through a workshop and 10 interviews.</p><div class="hw-tags"><span>Finance</span><span>Lead Designer &amp; Research</span><span>2025</span></div><span class="hw-cta">Read case study <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </a>
+          <a class="hw-panel" href="lattica.html" style="--c:#8fc3f5">
+            <div class="hw-pic"><img src="assets/covers/lattica.webp" alt="Lattica dashboard and live encrypted-AI demo" /></div>
+            <div><p class="hw-client">Lattica</p><h3>Zero to One</h3><p class="hw-text">Two products built from scratch for a startup running AI on fully encrypted data: a dashboard for clients, and a live demo that makes invisible technology tangible.</p><div class="hw-tags"><span>Data security</span><span>Lead Designer</span><span>2024</span></div><span class="hw-cta">Read case study <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </a>
+          <a class="hw-panel" href="alma.html" style="--c:#c3d86f">
+            <div class="hw-pic"><img src="assets/covers/alma.webp" alt="Alma IQ skin-scan companion app" /></div>
+            <div><p class="hw-client">Alma</p><h3>Scan to Care</h3><p class="hw-text">Shaping an open brief into a full product: an app that turns skin-scan results into treatments, bookings, home care and a reason to come back.</p><div class="hw-tags"><span>Beauty</span><span>Lead Designer</span><span>2025</span></div><span class="hw-cta">Read case study <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </a>
+          <div class="hw-panel" style="--c:#fbbf24">
+            <div class="hw-pic"><img src="assets/covers/leumi.webp" alt="Investments app illustration: a dotted globe with stock cards, a chart and filters" /><span class="hw-badge"><i></i>In progress</span></div>
+            <div><p class="hw-client">Bank Leumi</p><h3>The Big Trade</h3><p class="hw-text">An end-to-end redesign of Leumi&rsquo;s trading app, still in progress. The case study is on its way.</p><div class="hw-tags"><span>Finance</span><span>In progress</span><span>2023–2026</span></div><span class="hw-cta hw-cta--muted">Coming soon</span></div>
+          </div>
+        </div>
+        <div class="hw-progress mx-auto max-w-7xl px-5 sm:px-10 lg:px-20"><div><b id="hw-bar"></b></div></div>
+      </div>
+    </section>
+
+    <!-- How I work -->
+    <section class="bg-ink text-paper">
+      <div class="mx-auto max-w-7xl px-5 sm:px-10 lg:px-20 py-20 sm:py-28">
+        <h2 class="reveal text-4xl sm:text-6xl tracking-tightest font-medium max-w-3xl">
+          Asking the right questions <span class="text-paper/60">before drawing a single screen.</span>
+        </h2>
+
+        <div class="reveal mt-14 sm:mt-20 grid gap-px bg-paper/15 sm:grid-cols-2 lg:grid-cols-4 rounded-2xl overflow-hidden">
+          <div class="bg-ink p-6 sm:p-8">
+            <p class="text-xs tracking-widest text-paper/50">01</p>
+            <p class="mt-3 font-serif italic text-5xl sm:text-6xl leading-none">Ask</p>
+            <p class="mt-4 text-paper/70 text-sm leading-relaxed">Workshops with stakeholders and in-depth user interviews, before a single screen is drawn.</p>
+          </div>
+          <div class="bg-ink p-6 sm:p-8">
+            <p class="text-xs tracking-widest text-paper/50">02</p>
+            <p class="mt-3 font-serif italic text-5xl sm:text-6xl leading-none">Map</p>
+            <p class="mt-4 text-paper/70 text-sm leading-relaxed">Personas, user journeys and business goals that turn what we heard into a clear direction.</p>
+          </div>
+          <div class="bg-ink p-6 sm:p-8">
+            <p class="text-xs tracking-widest text-paper/50">03</p>
+            <p class="mt-3 font-serif italic text-5xl sm:text-6xl leading-none">Test</p>
+            <p class="mt-4 text-paper/70 text-sm leading-relaxed">Usability tests with real users, and changing the design based on what they show.</p>
+          </div>
+          <div class="bg-ink p-6 sm:p-8">
+            <p class="text-xs tracking-widest text-paper/50">04</p>
+            <p class="mt-3 font-serif italic text-5xl sm:text-6xl leading-none">Hand off</p>
+            <p class="mt-4 text-paper/70 text-sm leading-relaxed">Organised screens, states and specs, so developers build exactly what was designed.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- About -->
+    <section id="about" class="ab mx-auto max-w-7xl px-5 sm:px-10 lg:px-20">
+      <h2 class="ab-title"><em>a few things</em><br />about me</h2>
+      <div class="ab-booth" aria-label="A few things about Diana: mom and wife, yogi, zillennial, Aries">
+        <div class="ab-strip"><span class="ab-photo"><img src="assets/diana.jpg" alt="Diana holding her baby daughter" loading="lazy" /></span></div>
+        <span class="ab-chip" style="right:9%;top:14%">mom &amp; wife 🏡</span>
+        <span class="ab-chip" style="left:8%;top:40%">yogi 🧘‍♀️</span>
+        <span class="ab-chip" style="right:-2%;top:64%">zillennial 📼</span>
+        <span class="ab-chip" style="left:4%;top:86%">aries ♈</span>
+        <svg class="ab-shape" style="right:4.5%;top:-6.5%;width:15%;color:#f4a3c4;animation-direction:reverse" aria-hidden="true"><use href="#g-petals"/></svg>
+        <svg class="ab-shape" style="left:6%;top:18%;width:16%;color:#bdb1f6" aria-hidden="true"><use href="#g-rays"/></svg>
+        <svg class="ab-shape" style="right:6%;top:88%;width:13%;color:#c3d86f" aria-hidden="true"><use href="#g-spiky"/></svg>
+      </div>
+      <div class="ab-text">
+        <p>Hi, I&rsquo;m Diana, a product designer driven by curiosity, continuous learning, and a desire to understand the people behind every product. For me, great design starts with asking the right questions.</p>
+        <p>Outside of design, you&rsquo;ll usually find me surrounded by people. I thrive on meaningful conversations, shared experiences, and bringing positive energy into everything I do. It naturally shapes the way I work with others.</p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="lt">
+      <div class="lt-marquee" aria-hidden="true">
+        <div><span>Let&rsquo;s</span><em>talk</em><svg style="color:#bdb1f6"><use href="#g-rays"/></svg><span>Let&rsquo;s</span><em>talk</em><svg style="color:#f4a3c4"><use href="#g-petals"/></svg><span>Let&rsquo;s</span><em>talk</em><svg style="color:#c3d86f"><use href="#g-spiky"/></svg></div>
+        <div><span>Let&rsquo;s</span><em>talk</em><svg style="color:#bdb1f6"><use href="#g-rays"/></svg><span>Let&rsquo;s</span><em>talk</em><svg style="color:#f4a3c4"><use href="#g-petals"/></svg><span>Let&rsquo;s</span><em>talk</em><svg style="color:#c3d86f"><use href="#g-spiky"/></svg></div>
+      </div>
+      <h2 class="sr-only">Let&rsquo;s talk</h2>
+      <div class="mx-auto max-w-7xl px-5 sm:px-10 lg:px-20 pt-14 flex flex-col sm:flex-row sm:items-end justify-between gap-8">
+        <div>
+          <p class="text-sm text-paper/60">Currently exploring new product design opportunities.</p>
+          <p class="mt-4 text-xl sm:text-3xl tracking-tight select-all break-all">dianakuper31@gmail.com</p>
+        </div>
+        <div class="flex flex-wrap gap-3 text-sm">
+          <button id="copy-email" type="button" class="lt-btn lt-btn--solid"><span>Copy email</span></button>
+          <a href="https://www.linkedin.com/in/diana-kuperman-4a713b1a6" target="_blank" rel="noopener" class="lt-btn">LinkedIn ↗</a>
+          <a href="assets/Diana-Kuperman-CV.pdf" target="_blank" rel="noopener" class="lt-btn">Download CV ↓</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-7xl px-5 sm:px-10 lg:px-20 py-8 flex flex-col sm:flex-row gap-2 justify-between text-sm text-muted">
+      <p>© <span id="year">2026</span> Diana Kuperman</p>
+      <a href="#top" class="hover:text-[#bdb1f6] transition-colors">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script>
+    // Reveal on scroll. Anything still hidden after 2.5s is shown, so content never depends on scrolling.
+    const items = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -8% 0px' });
+      items.forEach((el) => io.observe(el));
+    }
+    setTimeout(() => items.forEach((el) => el.classList.add('is-visible')), 2500);
+
+    const copyBtn = document.getElementById('copy-email');
+    copyBtn.addEventListener('click', async () => {
+      const label = copyBtn.querySelector('span');
+      try {
+        await navigator.clipboard.writeText('dianakuper31@gmail.com');
+        label.textContent = 'Copied';
+      } catch {
+        label.textContent = 'Copy failed';
+      }
+      setTimeout(() => (label.textContent = 'Copy email'), 2000);
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script>
+    // Every page opens at the top unless a link points to a section on it.
+    // The viewer can restore an old scroll offset after load, so reset again shortly after, unless the visitor already scrolled.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
+    const toTop = () => { if (!location.hash && !touched) window.scrollTo(0, 0); };
+    toTop();
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', toTop);
+    [60, 250, 600].forEach((ms) => setTimeout(toTop, ms));
+  </script>
+  <script>
+    // Selected work: the section is as tall as the track is wide, so scrolling down slides the projects sideways.
+    (() => {
+      const sec = document.getElementById('work'), track = document.getElementById('hw-track'), bar = document.getElementById('hw-bar'), count = document.getElementById('hw-count');
+      const head = sec.querySelector('.hw-head h2');
+      const size = () => {
+        // Start the track on the same left edge as the heading
+        const edge = Math.round(head.getBoundingClientRect().left);
+        track.style.paddingLeft = track.style.paddingRight = edge + 'px';
+        sec.style.height = (Math.max(0, track.scrollWidth - innerWidth) + innerHeight) + 'px';
+      };
+      size(); addEventListener('resize', size); addEventListener('load', size);
+      const tick = () => {
+        const total = sec.offsetHeight - innerHeight, prog = total > 0 ? Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / total)) : 0;
+        track.style.transform = `translateX(${-prog * Math.max(0, track.scrollWidth - innerWidth)}px)`;
+        bar.style.width = (prog * 100) + '%';
+        count.textContent = String(Math.min(5, Math.floor(prog * 4.999) + 1)).padStart(2, '0');
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      // Gentle 3D tilt on project pictures for mouse users
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+        document.querySelectorAll('.hw-panel').forEach((p) => {
+          const pic = p.querySelector('.hw-pic');
+          p.addEventListener('pointermove', (e) => { const r = pic.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; pic.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`; });
+          p.addEventListener('pointerleave', () => { pic.style.transform = ''; });
+        });
+    })();
+  </script>
+</body>
+</html>

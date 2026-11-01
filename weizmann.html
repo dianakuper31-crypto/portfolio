@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>The Bigger Log</title>
+  <meta name="description" content="Redesigning the Weizmann Institute's study-logging app so participants keep logging until the study ends." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
+  <style>
+    /* Case study: narrow text column (≈65ch) with full-bleed media rows. Accents come from the app itself: its indigo and its orange hands. */
+    :root {
+      --bg: #F3F0EA;
+      --ink: #151515;
+      --muted: #6B6862;
+      --line: #DAD5CC;
+      --card: #ffffff;
+      --indigo: #4a43e8;
+      --indigo-soft: #e6e5fd;
+      --orange: #e8642c;
+      --font: "Inter Tight", system-ui, sans-serif;
+      --serif: "Instrument Serif", Georgia, serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    img, video { max-width: 100%; height: auto; display: block; }
+
+    .gutter { padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+    .col { max-width: 1180px; margin: 0 auto; }
+    .col > * { max-width: 720px; }   /* text keeps a readable measure but starts on the same left edge as the media */
+    .wide { max-width: 1180px; margin: 0 auto; }
+
+    /* Hero */
+    .hero { padding-block: 48px 40px; }
+    .eyebrow { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 14px; }
+    h1 { margin: 0; font-size: clamp(44px, 8vw, 96px); line-height: .95; letter-spacing: -.045em; font-weight: 500; text-wrap: balance; }
+    .lede { margin: 22px 0 0; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.45; letter-spacing: -.01em; max-width: 34ch; }
+    .meta { margin: 36px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .meta dt { font-size: 14px; font-weight: 400; color: var(--muted); }
+    .meta dd { margin: 4px 0 0; font-size: 14px; font-weight: 400; line-height: 1.4; }
+
+    /* Cover: square artwork centred on a band painted with the artwork's own gradient, so it reads full-width on desktop */
+    .cover { background: linear-gradient(180deg, #1d1a74 0%, #0f0c53 50%, #020035 100%); border-radius: 24px; overflow: hidden; display: flex; justify-content: center; }
+    .cover img { width: min(100%, 640px); height: auto; }
+
+    /* Sections */
+    section { padding-block: 56px; }
+    h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; }
+    h2 { margin: 0 0 18px; font-size: clamp(30px, 4.4vw, 44px); line-height: 1.05; letter-spacing: -.045em; font-weight: 500; }
+    p { margin: 0 0 16px; font-size: 18px; line-height: 1.65; color: #2c2c2c; }
+    .callout { margin: 28px 0 0; padding: 22px 24px; background: var(--indigo-soft); border-radius: 18px; }
+    .callout b { font-weight: 500; display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--indigo); margin-bottom: 8px; }
+    .callout p { margin: 0; font-size: 20px; line-height: 1.5; color: var(--ink); font-weight: 400; }
+    .values { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .values span { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 400; }
+
+    /* Media: one composed image on desktop, separate pieces on phones */
+    .media { margin-top: 32px; }
+    .only-desktop { display: block; }
+    .only-mobile { display: none; }
+    .rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; -webkit-overflow-scrolling: touch; }
+    .rail img { flex: 0 0 auto; width: min(68%, 280px); min-width: 0; scroll-snap-align: center; height: auto; }
+    .rail-hint { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+    .mood-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mood-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .mood-grid .tall { grid-row: span 2; }
+    .caption { font-size: 14px; color: var(--muted); margin-top: 12px; }
+
+    /* Findings */
+    .findings { display: grid; gap: 64px; margin-top: 40px; }
+    .finding { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: center; }
+    .finding .num { font-size: 14px; font-weight: 400; color: var(--muted); margin: 0 0 10px; }
+    .finding h3 { margin: 0 0 14px; font-size: 24px; line-height: 1.2; letter-spacing: -.03em; font-weight: 500; }
+    .finding p { font-size: 17px; }
+    .finding .tag { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-right: 6px; }
+    .tag.keep { background: #dff1e4; color: #1f7a3f; }
+    .tag.fix { background: #fde3d6; color: #b4461a; }
+    .compare { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; }
+    .compare figure { margin: 0; }
+    .compare figcaption { margin-top: 10px; font-size: 13px; font-weight: 400; color: var(--muted); text-align: center; }
+    .compare .arrow { font-size: 24px; color: var(--muted); }
+    .slot { position: relative; aspect-ratio: 400 / 860; border-radius: 28px; background: #e4e4e4; overflow: hidden; display: grid; place-items: center; color: #999; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
+
+    /* Prototype video */
+    .video { margin-top: 32px; border-radius: 22px; overflow: hidden; background: var(--card); box-shadow: 0 1px 0 var(--line); }
+    .video video { width: 100%; height: auto; }
+
+    /* More */
+    .more { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .more a { display: block; padding: 28px 24px; background: var(--card); border-radius: 18px; text-decoration: none; }
+    .more small { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .more strong { font-weight: 500; font-size: 24px; letter-spacing: -.03em; }
+    .more a:hover strong { color: #bdb1f6; }
+    footer { padding-block: 32px 48px; font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 760px) {
+      .meta { grid-template-columns: 1fr 1fr; }
+      section { padding-block: 40px; }
+      .only-desktop { display: none; }
+      .only-mobile { display: block; }
+      .only-mobile.mood-grid { display: grid; }
+      .finding { grid-template-columns: 1fr; gap: 20px; }
+      .compare { gap: 8px; }
+      .more { grid-template-columns: 1fr; }
+    }
+    :root { --page-bg: var(--bg); }
+    /* Site nav: identical on every page */
+    .site-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+      background: color-mix(in srgb, var(--page-bg) 85%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(21, 21, 21, .08);
+      padding-left: max(clamp(20px, 6vw, 96px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(20px, 6vw, 96px), env(safe-area-inset-right, 0px)); }
+    .site-nav__inner { line-height: 1.5; max-width: 1180px; margin: 0 auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-nav__logo { font-family: "DM Sans", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: #151515; text-decoration: none; }
+    .site-nav__links { display: flex; align-items: center; gap: clamp(20px, 3vw, 32px); font-family: "Inter Tight", system-ui, sans-serif; font-size: 14px; font-weight: 400; }
+    .site-nav__links a { color: #151515; text-decoration: none; transition: color .2s; }
+    .site-nav__links a:hover { color: #bdb1f6; }
+    .site-nav__links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+    .site-nav a:focus-visible { outline: 2px solid #151515; outline-offset: 4px; border-radius: 6px; }
+    .site-nav__cta { display: none !important; align-items: center; gap: 8px; background: #151515; color: #fff !important; border-radius: 999px; padding: 8px 16px; }
+    .site-nav__cta:hover { background: #f4a3c4; color: #151515 !important; }
+    .site-nav__cta i { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+    @media (min-width: 640px) { .site-nav__cta { display: inline-flex !important; } }
+  </style>
+</head>
+<body>
+  <header class="site-nav">
+    <nav class="site-nav__inner" aria-label="Main">
+      <a class="site-nav__logo" href="index.html" aria-label="Diana Kuperman, home">D.K.</a>
+      <div class="site-nav__links">
+        <a href="index.html#work">Work</a>
+        <a href="about.html">About</a>
+        <a href="assets/Diana-Kuperman-CV.pdf" target="_blank" rel="noopener">CV</a>
+        <a class="site-nav__cta" href="index.html#contact"><i aria-hidden="true"></i>Available for work</a>
+      </div>
+    </nav>
+  </header>
+  
+  <main>
+    <header class="hero gutter">
+      <div class="wide">
+        <p class="eyebrow">Weizmann Institute of Science</p>
+        <h1>The <em>Bigger</em> Log</h1>
+        <p class="lede">Redesigning a research app participants were abandoning mid-study, so logging intimate daily data feels private, cared for, and part of real science.</p>
+        <dl class="meta">
+          <div><dt>Industry</dt><dd>Science</dd></div>
+          <div><dt>Client</dt><dd>Research institute</dd></div>
+          <div><dt>Year</dt><dd>2025</dd></div>
+          <div><dt>My role</dt><dd>Lead designer, user testing, dev handoff</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="gutter">
+      <div class="wide cover">
+        <img src="assets/weizmann/cover.webp" alt="Care Lab illustration: one hand passes a checked log sheet to another inside an arch, with a sleep card and an Add report button" width="1400" height="1400" />
+      </div>
+    </div>
+
+
+    <section class="gutter">
+      <div class="col">
+        <h2>About</h2>
+        <p>The Weizmann Institute of Science runs studies that rely on participants logging daily personal data: meals, sleep, bowel movements, exercise and medication. Sometimes several times a day, for the whole length of a study.</p>
+        <p>The existing reporting app was outdated and unintuitive, and participants were abandoning it mid-study.</p>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The challenge</h2>
+        <p>Participants had to hand over intimate personal and medical data, again and again. The existing app gave them no reason to keep coming back, and no visible sense of what their effort was contributing to.</p>
+        <div class="callout">
+          <b>The core challenge</b>
+          <p>Get participants to complete their logs consistently, without dropping off, by making them feel trusted with their privacy and genuinely part of something scientific.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The old app</h2>
+        <p>The app participants were dropping: every section had its own colour and layout, so it never felt like one product.</p>
+      </div>
+      <div class="wide media">
+        <img class="only-desktop" src="assets/weizmann/old-app.webp" alt="Four screens of the old app, each with a different colour and layout" loading="lazy" />
+        <div class="only-mobile">
+          <div class="rail">
+            <img src="assets/weizmann/old-1.webp" alt="Old app home" loading="lazy" />
+            <img src="assets/weizmann/old-2.webp" alt="Old app history" loading="lazy" />
+            <img src="assets/weizmann/old-3.webp" alt="Old app add-food screen" loading="lazy" />
+            <img src="assets/weizmann/old-4.webp" alt="Old app sleep screen" loading="lazy" />
+          </div>
+          <p class="rail-hint">Swipe →</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Creative concept: <span>Care Lab</span></h2>
+        <p>Hands became the anchor. Hands give, help and heal without ever showing a face. That made them the natural image for the three values the brand came down to: data handled with care, a person kept anonymous, and a small daily act tied to something larger.</p>
+        <div class="values"><span>Science</span><span>Privacy</span><span>Contribution</span></div>
+      </div>
+      <div class="wide media">
+        <img class="only-desktop" src="assets/weizmann/moodboard.webp" alt="Moodboard: lab glassware, a gloved hand at a microscope, a pill organiser, lemons, and hands passing a flower" loading="lazy" />
+        <div class="only-mobile mood-grid">
+          <img src="assets/weizmann/mood-3.webp" class="tall" alt="Gloved hand at a microscope" loading="lazy" />
+          <img src="assets/weizmann/mood-6.webp" alt="Hands passing a flower" loading="lazy" />
+          <img src="assets/weizmann/mood-4.webp" alt="Pill organiser" loading="lazy" />
+          <img src="assets/weizmann/mood-2.webp" alt="Lab glassware in violet light" loading="lazy" />
+          <img src="assets/weizmann/mood-7.webp" alt="Illustrated hands" loading="lazy" />
+          <img src="assets/weizmann/mood-5.webp" alt="Lemons on a board" loading="lazy" />
+          <img src="assets/weizmann/mood-1.webp" alt="A hand behind a white wall" loading="lazy" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>Usability testing</h2>
+        <p>We ran usability tests on the new flows with 7 participants. Three findings changed the design.</p>
+      </div>
+      <div class="wide findings">
+
+        <article class="finding">
+          <div>
+            <p class="num">Finding 01</p>
+            <h3>The date itself should be the button</h3>
+            <p>5 out of 7 participants tapped directly on the date text when trying to log a past entry, not on the calendar icon next to it. People expect the visible date to be the interactive element, and a separate icon reads as decoration. So we combined them into one control.</p>
+          </div>
+          <div class="compare">
+            <figure><div class="slot">Before<img src="assets/weizmann/finding-01-before.webp" alt="Before: date text with a separate calendar icon" loading="lazy" onerror="this.remove()" /></div><figcaption>Before</figcaption></figure>
+            <span class="arrow" aria-hidden="true">→</span>
+            <figure><div class="slot">After<img src="assets/weizmann/finding-01-after.webp" alt="After: the date and calendar icon combined into one tappable chip" loading="lazy" onerror="this.remove()" /></div><figcaption>After</figcaption></figure>
+          </div>
+        </article>
+
+        <article class="finding">
+          <div>
+            <p class="num">Finding 02</p>
+            <h3>Opposite states need a clear gap</h3>
+            <p>Almost half the participants missed the difference between a "didn't eat" entry and a completed one; the visual gap between them was too subtle. We had first avoided a fully disabled look as too extreme, but the test showed that opposite states need a clear difference, not nuance.</p>
+          </div>
+          <div class="compare">
+            <figure><div class="slot">Before<img src="assets/weizmann/finding-02-before.webp" alt="Before: a skipped meal looks almost like a logged one" loading="lazy" onerror="this.remove()" /></div><figcaption>Before</figcaption></figure>
+            <span class="arrow" aria-hidden="true">→</span>
+            <figure><div class="slot">After<img src="assets/weizmann/finding-02-after.webp" alt="After: a skipped meal is shown greyed out" loading="lazy" onerror="this.remove()" /></div><figcaption>After</figcaption></figure>
+          </div>
+        </article>
+
+        <article class="finding">
+          <div>
+            <p class="num">Finding 03</p>
+            <h3>Search first, and logged items near "Finish"</h3>
+            <p><span class="tag keep">Keep</span>A search bar over a full list. The client wanted the old app's long list back, but testing confirmed what we insisted on: scrolling a never-ending list felt overwhelming, and people wanted to search for the item right away.</p>
+            <p><span class="tag fix">Fix</span>The orange chips for items already logged in that session were understood, but their horizontal scroll wasn't. We reordered them to lead with the most recent entry and moved them next to the finish button, where people double-check before submitting. The list under the search bar also confused participants, so we added a "Recent searches" label and a "Clear all" action.</p>
+          </div>
+          <div class="compare">
+            <figure><div class="slot">Before<img src="assets/weizmann/finding-03-before.webp" alt="Before: logged-item chips at the top, under the search bar" loading="lazy" onerror="this.remove()" /></div><figcaption>Before</figcaption></figure>
+            <span class="arrow" aria-hidden="true">→</span>
+            <figure><div class="slot">After<img src="assets/weizmann/finding-03-after.webp" alt="After: chips moved above the finish button, recent searches labelled" loading="lazy" onerror="this.remove()" /></div><figcaption>After</figcaption></figure>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="col">
+        <h2>The result</h2>
+        <p>One consistent logging app, built around the Care Lab hands.</p>
+      </div>
+      <div class="wide" style="margin-top:32px">
+        <div class="video">
+          <video src="assets/weizmann/prototype.mp4" poster="assets/weizmann/poster.webp" autoplay muted loop playsinline preload="metadata" aria-label="Prototype animation of the redesigned home screen"></video>
+        </div>
+      </div>
+      <div class="wide media" style="margin-top:40px">
+        <img class="only-desktop" src="assets/weizmann/hero-phones.webp" alt="Four screens of the redesigned app: login, today's log, history and adding a sport entry" width="2000" height="871" loading="lazy" />
+        <div class="only-mobile">
+          <div class="rail">
+            <img src="assets/weizmann/phone-1.webp" alt="Login screen" loading="lazy" />
+            <img src="assets/weizmann/phone-2.webp" alt="Today's log" loading="lazy" />
+            <img src="assets/weizmann/phone-3.webp" alt="Nutrition history" loading="lazy" />
+            <img src="assets/weizmann/phone-4.webp" alt="Adding a sport entry" loading="lazy" />
+          </div>
+          <p class="rail-hint">Swipe to see all four screens →</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gutter">
+      <div class="wide">
+        <h2>More to explore</h2>
+        <div class="more">
+          <a href="lattica.html"><small>Lattica · Data security · 2024</small><strong>Zero to One →</strong></a>
+          <a href="alma.html"><small>Alma · Beauty · 2025</small><strong>Scan to Care →</strong></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="gutter">
+    <footer class="wide">
+      <span>© 2026 Diana Kuperman</span>
+      <a href="index.html">Back to all work</a>
+    </footer>
+  </div>
+  <script>
+    // Every page opens at the top unless a link points to a section on it.
+    // The viewer can restore an old scroll offset after load, so reset again shortly after, unless the visitor already scrolled.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => { touched = true; }, { once: true, passive: true }));
+    const toTop = () => { if (!location.hash && !touched) window.scrollTo(0, 0); };
+    toTop();
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', toTop);
+    [60, 250, 600].forEach((ms) => setTimeout(toTop, ms));
+  </script>
+</body>
+</html>
