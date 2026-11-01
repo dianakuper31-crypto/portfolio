@@ -85,10 +85,11 @@
     .hero-h1 { margin: 0; font-size: clamp(48px, 7.4vw, 128px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
     .hero-h1 .nw { white-space: nowrap; }
     .m-br { display: none; }
-    @media (max-width: 640px) {
+    .hero-sec { min-height: calc(100vh - 65px); min-height: calc(100svh - 65px); display: flex; flex-direction: column; justify-content: center; }
+    @media (max-width: 640px), (orientation: portrait) and (max-width: 1100px) {
       .m-br { display: inline; }
-      .hero-sec { min-height: calc(100svh - 65px); display: flex; flex-direction: column; justify-content: center; padding-top: 40px; padding-bottom: 56px; }
-      .hero-h1 { font-size: 19vw; line-height: .98; }
+      .hero-sec { padding-top: 40px; padding-bottom: 56px; }
+      .hero-h1 { font-size: min(19vw, 12svh); line-height: .98; }
     }
     /* serif has a smaller x-height than Inter Tight, so it is set a touch larger to sit level with the sans words */
     .hero-h1 em { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.14em; line-height: 0; letter-spacing: -0.02em; padding-right: .04em; }
