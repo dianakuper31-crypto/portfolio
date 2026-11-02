@@ -23,7 +23,7 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter+Tight:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,800&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
@@ -39,7 +39,7 @@
           },
           fontFamily: {
             sans: ['"Inter Tight"', 'system-ui', 'sans-serif'],
-            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
           },
           letterSpacing: { tightest: '-0.045em' },
         },
@@ -92,7 +92,7 @@
       .hero-h1 { font-size: min(19vw, 12svh); line-height: .98; }
     }
     /* serif has a smaller x-height than Inter Tight, so it is set a touch larger to sit level with the sans words */
-    .hero-h1 em { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.14em; line-height: 0; letter-spacing: -0.02em; padding-right: .04em; }
+    .hero-h1 em { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.14em; line-height: 0; letter-spacing: -0.02em; padding-right: .04em; }
     .hero-h1 .glyph { display: inline-block; width: .66em; height: .66em; vertical-align: -.04em; margin: 0 .06em; fill: currentColor; }
     /* Photo capsule set inline with the words */
     .pill { display: inline-block; width: 1.5em; height: .72em; border-radius: 999px; vertical-align: -.02em; overflow: hidden; }
@@ -129,7 +129,7 @@
     .hw-pic { position: relative; aspect-ratio: 4 / 3; border-radius: 22px; overflow: hidden; transition: transform .35s cubic-bezier(.2,.8,.2,1); background: #e8e3da; }
     .hw-pic img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform .8s cubic-bezier(.2,.8,.2,1); }
     .hw-panel:hover .hw-pic img { transform: scale(1.1); }
-    .hw-num { margin: 0; font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-size: clamp(56px, 8vw, 120px); line-height: .8; color: var(--c); }
+    .hw-num { margin: 0; font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: clamp(56px, 8vw, 120px); line-height: .8; color: var(--c); }
     .hw-client { margin: 0; font-size: 14px; color: #6B6862; }
     .hw-panel h3 { margin: 6px 0 12px; font-size: clamp(30px, 4vw, 54px); line-height: .98; letter-spacing: -.045em; font-weight: 500; }
     .hw-text { margin: 0; color: rgba(21,21,21,.75); font-size: 16px; line-height: 1.55; max-width: 36ch; }
@@ -156,7 +156,7 @@
     .lt { background: #151515; color: #F3F0EA; padding: 96px 0 72px; overflow: hidden; border-top: 1px solid rgba(243,240,234,.12); }
     .lt-marquee { display: flex; white-space: nowrap; font-size: clamp(56px, 11vw, 170px); font-weight: 600; letter-spacing: -.055em; line-height: 1; }
     .lt-marquee div { display: flex; gap: .3em; padding-right: .3em; animation: lt-run 22s linear infinite; }
-    .lt-marquee em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -.02em; }
+    .lt-marquee em { font-family: "Playfair Display", Georgia, serif; font-weight: 400; letter-spacing: -.02em; }
     .lt-marquee svg { width: .6em; height: .6em; align-self: center; fill: currentColor; animation: spin 18s linear infinite; }
     @keyframes lt-run { to { transform: translateX(-100%); } }
     .lt-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #F3F0EA; color: #F3F0EA; background: transparent; border-radius: 999px; padding: 12px 22px; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
@@ -167,7 +167,7 @@
     /* About on the homepage: photo-booth strip with floating chips beside the intro (phones: stacked) */
     .ab { display: grid; grid-template-areas: "title" "photo" "text"; justify-items: center; gap: clamp(28px, 4vw, 44px); padding-top: clamp(80px, 10vw, 128px); padding-bottom: clamp(80px, 10vw, 128px); }
     .ab-title { grid-area: title; margin: 0; text-align: center; font-size: clamp(52px, 9vw, 112px); line-height: .88; letter-spacing: -.05em; font-weight: 600; }
-    .ab-title em { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; font-size: .62em; letter-spacing: -.02em; }
+    .ab-title em { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 400; font-size: .62em; letter-spacing: -.02em; }
     .ab-booth { grid-area: photo; position: relative; container-type: inline-size; width: min(100%, 560px); padding: 0 12%; }
     .ab-booth > .ab-chip, .ab-booth > .ab-shape { position: absolute; z-index: 2; }
     .ab-strip { background: #151515; padding: 3.2cqw; transform: rotate(-2deg); box-shadow: 0 30px 60px rgba(21,21,21,.18); }
